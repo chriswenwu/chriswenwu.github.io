@@ -229,7 +229,7 @@
   
   <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
     <div class="post-block">
-      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.7 Docker 健康检查/">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.6 Docker 内核能力配置/">
       <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
         <meta itemprop="name" content="Chris">
         <meta itemprop="description" content>
@@ -241,7 +241,7 @@
     </div>
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link post-title-link-external" href="/2019/03/22/Docker/1.7 Docker 健康检查/" itemprop="url">健康检查</a>
+        <a class="post-title-link post-title-link-external" href="/2019/03/22/Docker/1.6 Docker 内核能力配置/" itemprop="url">Docker 数据卷的使用与挂载主机目录</a>
       </h1>
       <div class="post-meta">
         
@@ -263,63 +263,255 @@
     </header>
     <main class="post-main" itemprop="articleBody">
       
-      <h1 id="Docker-健康检查"><a href="#Docker-健康检查" class="headerlink" title="Docker 健康检查"></a>Docker 健康检查</h1><p>我们运行容器时，查看容器状态时，只显示容器是否正在运行。</p>
-<p>如果出现这种情况：容器内的进程仍在运行，但是陷入了死循环出现假死状态，不能响应新的请求。Docker 是没有办法去判断这个容器内的服务是不可用的。</p>
-<p>我们来模拟这种情况：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d -p 80:80 --name nginx nginx:1.14.2<br>9a340f69249f387475bd22c08dbb96f4cae7712dab59f9af007a78589a2b0d01<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   3 minutes ago       Up 3 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br>HTTP/1.1 200 OK<br>Server: nginx/1.14.2<br>Date: Thu, 21 Feb 2019 18:16:21 GMT<br>Content-Type: text/html<br>Content-Length: 612<br>Last-Modified: Tue, 04 Dec 2018 14:44:49 GMT<br>Connection: keep-alive<br>ETag: <span class="hljs-string">"5c0692e1-264"</span><br>Accept-Ranges: bytes<br></code></pre></td></tr></table></figure>
-<p>我们只能看到状态是 <code>UP</code> 状态，并且 Nginx 主页可以访问。</p>
-<p>我们暂停进程：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     28760 28741  0 02:09 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      28798 28760  0 02:09 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 28760 28798<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   9 minutes ago       Up 9 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br></code></pre></td></tr></table></figure>
-<blockquote>
-<p>注：如果想恢复暂停的容器，发送 SIGCONT 信号： <code>kill -s SIGCONT &lt;进程 ID&gt;</code></p>
-</blockquote>
-<p>此时我们看到的状态依然是 <code>UP</code> 状态，看不出任何问题，但是 Nginx 主页已经无法访问。</p>
-<p>所以我们需要利用健康检查机制来检测服务的可用性，防止类似于以上进程还在但服务无法访问的情况。</p>
-<h2 id="容器添加健康检查"><a href="#容器添加健康检查" class="headerlink" title="容器添加健康检查"></a>容器添加健康检查</h2><p>Docker 提供了原生的健康检查实现，对应的参数为：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">--health-cmd  <span class="hljs-comment"># 执行一个健康检查命令</span><br>--health-interval  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查的执行的间隔时间（单位：ms、s 、m、h）</span><br>--health-retries  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令失败重试的次数</span><br>--health-timeout  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令超时时间（单位：ms、s 、m、h）</span><br></code></pre></td></tr></table></figure>
-<p>由于 Nginx 官方容器内没有 <code>curl</code> 命令，所以我们还需要制作一个带 <code>curl</code> 命令的 Nginx 容器。</p>
-<p>Dockerfile 如下：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">FROM nginx:1.14.2<br><br>RUN apt-get update -y &amp;&amp; apt-get install -y curl<br></code></pre></td></tr></table></figure>
-<p>在 Dockerfile 同级目录下构建镜像：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ tree<br>.<br>└── Dockerfile<br><br>0 directories, 1 file<br><br>$ docker image build -t nginx:1.14.2 .<br>...<br></code></pre></td></tr></table></figure>
-<p>现在我们来执行一个带有健康检查机制的容器：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    -p 80:80 \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-retries 5 \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>09118d61118af403dae9b33cf1efbaac36bd3162052eba3aa4c4b344efb61e1b<br></code></pre></td></tr></table></figure>
-<p>此时我们在来看容器的运行状态：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                        PORTS                NAMES<br>09118d61118a        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   About a minute ago   Up About a minute (healthy)   0.0.0.0:80-&gt;80/tcp   nginx<br></code></pre></td></tr></table></figure>
-<p>会发现查看容器的状态多了一种状态：<code>healthy</code>，说明这个容器是健康的。</p>
-<p>我们使用 <code>docker container inspect</code> 命令来获取健康检查的记录：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T02:37:59.86587781+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T02:38:00.02983152+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;title&gt;Welcome to nginx!&lt;/title&gt;\n&lt;style&gt;\n    body &#123;\n        width: 35em;\n        margin: 0 auto;\n        font-family: Tahoma, Verdana, Arial, sans-serif;\n    &#125;\n&lt;/style&gt;\n&lt;/head&gt;\n&lt;body&gt;\n&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;\n&lt;p&gt;If you see this page, the nginx web server is successfully installed and\nworking. Further configuration is required.&lt;/p&gt;\n\n&lt;p&gt;For online documentation and support please refer to\n&lt;a href=\"http://nginx.org/\"&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;\nCommercial support is available at\n&lt;a href=\"http://nginx.com/\"&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;\n\n&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>我们再来暂停进程：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     10198 10179  0 03:01 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      10233 10198  0 03:01 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 10198 10233<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS                NAMES<br>30f2c0ae85df        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   8 minutes ago       Up 8 minutes (unhealthy)   0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"unhealthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 6,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:10:15.499220798+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:10:17.499541229+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: -1,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"Health check exceeded timeout (2s)"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>这样，我们就可以准确的知道容器内的服务是否可用。在进行监控或者自动化时就可以根据容器的健康检查状态返回的退出码（ExitCode）来进行判断了。</p>
-<p>我们指定的健康检查命令为 <code>curl --silent --fail --connect-timeout 3 http://localhost || exit 1</code>，这条命令表示如果执行成功，则返回的值为 0，如果执行失败，则返回值为 1。</p>
-<p><strong>指定健康检查的命令的返回值决定了容器的状态</strong>，可能的值为：</p>
+      <h1 id="1-6-Docker-内核能力配置"><a href="#1-6-Docker-内核能力配置" class="headerlink" title="1.6 Docker 内核能力配置"></a>1.6 Docker 内核能力配置</h1><p>Linux 内核定义了一些特殊的权限，即所谓的<strong>能力（Capability）</strong>，把这些权限分配给进程后，进程就能够获得更多的系统权限。可用的内核能力涵盖广泛的功能，从更改系统时间到开启网络套接字。所以如果某个进程拥有完全的 Root 权限，即拥有所有的内核能力，那么这个进程是很危险的，很可能被攻击者利用，并获得系统的 Root 权限。</p>
+<p>我们可以使用 <code>getcap</code> 命令获取程序所拥有的 Linux 内核功能。比如说 Ping 这个程序，执行时只需要获取一些关于网络的内核权限，所以默认会给 Ping 分配有限的权限使你使用 Ping 的时候更加安全：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">getcap</span> /bin/ping<br>/bin/ping = cap_net_admin,cap_net_raw+p<br></code></pre></td></tr></table></figure>
+<p>我们也可以使用 <code>getpcaps</code> 来获取进程所拥有的 Linux 内核功能。比如说 NetworkManaget 这个进程所拥有的 Linux 内核功能为：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep NetworkManager<br>root      5745     1  0 Feb19 ?        00:00:03 /usr/sbin/NetworkManager --no-daemon<br><br>$ getpcaps 5745<br>Capabilities <span class="hljs-keyword">for</span> `5745<span class="hljs-string">': = cap_dac_override,cap_kill,cap_setgid,cap_setuid,cap_net_bind_service,cap_net_admin,cap_net_raw,cap_sys_module,cap_sys_chroot,cap_sys_admin,cap_audit_write+ep</span><br></code></pre></td></tr></table></figure>
+<p>相关 Linux 内核功能参考<a href="http://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank" rel="noopener">capabilities(7) - Linux man page</a>。</p>
+<p>我们之前介绍过，容器的本质其实就是一个进程。那么容器自然也可以获取或者限制 Linux 内核的能力。</p>
+<p>容器对于 Linux 内核能力配置的使用非常少，但是有些情况又很重要：</p>
 <ul>
-<li><p>0：healthy - 容器健康，可以使用；</p>
+<li><p>比如说容器内的时间是无法隔离的，和宿主机的时间是共享的，但是容器内是不能修改系统时间的，必须要为容器加上修改时间的内核能力（SYS_TIME）才能修改系统时间，这对于需要能修改时间的容器（NTP 容器）是很重要的；</p>
 </li>
-<li><p>1：unhealthy - 容器不健康，需要诊断；</p>
-</li>
-<li><p>2：reserved - 保留，不要使用这个返回值。</p>
+<li><p>比如说容器内是没办法修改网络的，如果想在某个容器内管理网络，也必须加上网络管理的内核能力（NET_ADMIN）才能修改网络。</p>
 </li>
 </ul>
-<h2 id="添加健康检查专用返回文本"><a href="#添加健康检查专用返回文本" class="headerlink" title="添加健康检查专用返回文本"></a>添加健康检查专用返回文本</h2><p>直接访问主页来执行健康检查有些不合适，我们还可以添加一个健康检查的配置：</p>
-<p>在 Nginx 配置文件中添加一条健康检查的匹配规则：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ cat /data/nginx/conf.d/default.conf | awk <span class="hljs-string">'! /^$/ &amp;&amp; ! /^[ ]?.*#/ &#123; print &#125;'</span><br>server &#123;<br>    listen       80;<br>    server_name  localhost;<br>    location / &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>    &#125;<br>    location /health &#123;<br>        add_header Content-Type <span class="hljs-string">"text/plain;charset=utf-8"</span>;<br>        <span class="hljs-built_in">return</span> 200 <span class="hljs-string">"ok"</span>;<br>    &#125;<br>    error_page   500 502 503 504  /50x.html;<br>    location = /50x.html &#123;<br>        root   /usr/share/nginx/html;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>然后运行挂载配置目录来运行 Nginx 容器：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    --name nginx \<br>    -p 80:80 \<br>    --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/data/nginx/conf.d/,dst=/etc/nginx/conf.d \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost/health || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>57f9378df04830a9e7081aff8efc13109b200799b11d2cd2d924a8ae276e8fc5<br></code></pre></td></tr></table></figure>
-<p>此时我们在获取健康检查记录就精简多了：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:01:52.41008393+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:01:52.561938938+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"ok"</span><br>    &#125;<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>类似的，在 Java 程序中，也可以添加一个专用的接口提供给健康检查机制使用：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">@RestController<br>@RequestMapping(path = <span class="hljs-string">"/"</span>)<br>public class Healthz &#123;<br>    @GetMapping(path = <span class="hljs-string">"/health"</span>,produces = MediaType.TEXT_PLAIN_VALUE)<br>    public String <span class="hljs-function"><span class="hljs-title">healthz</span></span>()&#123;<br>        <span class="hljs-built_in">return</span> <span class="hljs-string">"ok"</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
-<li><p>只是看容器是否正在运行时没办法保证服务是可用的，我们需要使用健康检查来确保服务是可用的。</p>
+<p>还有一种情况，如果对安全性要求很高的公司，限制容器的 Linux 内核能力将会大幅度的提高系统的安全性。</p>
+<p>我们这里只是简单介绍容器对于 Linux 内核能力的配置，只是为了容器内运行某个程序时出现权限不足时能够想到为容器提权。</p>
+<h2 id="容器默认授权的内核功能"><a href="#容器默认授权的内核功能" class="headerlink" title="容器默认授权的内核功能"></a>容器默认授权的内核功能</h2><p>默认情况下，Docker 容器是「非特权」的，即不是拥有完全的 Root 权限。</p>
+<p>我们来看下 Docker 默认拥有的 Linux 内核功能：</p>
+<table>
+<thead>
+<tr>
+<th>Capability Key</th>
+<th>Capability Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SETPCAP</td>
+<td>允许修改其他进程内核能力（容器主进程只能看到子进程也就是容器内的进程）</td>
+</tr>
+<tr>
+<td>MKNOD</td>
+<td>允许使用 mknod(2) 创建特殊文件（设备文件）</td>
+</tr>
+<tr>
+<td>AUDIT_WRITE</td>
+<td>允许向内核审计日志写入记录</td>
+</tr>
+<tr>
+<td>CHOWN</td>
+<td>允许改变文件的所有权（可以参考 chown 命令）</td>
+</tr>
+<tr>
+<td>NET_RAW</td>
+<td>允许使用 RAW 与 套接字（即 IP:Port）</td>
+</tr>
+<tr>
+<td>DAC_OVERRIDE</td>
+<td>允许忽略文件的读、写和执行权限的检查（即忽略文件的 DAC 访问限制）</td>
+</tr>
+<tr>
+<td>FOWNER</td>
+<td>允许忽略文件属主 ID 必须和进程用户 ID 相匹配的限制</td>
+</tr>
+<tr>
+<td>FSETID</td>
+<td>允许设置文件的 setuid 位（参考 chmod 命令）</td>
+</tr>
+<tr>
+<td>KILL</td>
+<td>允许对不属于自己的进程发送信号（参考 kill 命令）</td>
+</tr>
+<tr>
+<td>SETGID</td>
+<td>允许改变进程的组 ID</td>
+</tr>
+<tr>
+<td>SETUID</td>
+<td>允许改变进程的用户 ID</td>
+</tr>
+<tr>
+<td>NET_BIND_SERVICE</td>
+<td>允许将套接字（IP:Port）绑定特权接口（即端口号 Port 小于 1024）</td>
+</tr>
+<tr>
+<td>SYS_CHROOT</td>
+<td>允许改变进程的根目录（参考 chroot 命令）</td>
+</tr>
+<tr>
+<td>SETFCAP</td>
+<td>允许修改文件的内核能力（参考 setcap 命令）</td>
+</tr>
+</tbody>
+</table>
+<p>我们可以使用 <code>pscap</code> 来获取容器默认的内核能力：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d --name nginx nginx:1.14.2<br>a1919f19e91fb89c5d15aaa02f457cc6d1cf41d163140adbdd033401cc628d3a<br><br>$ ps -ef | grep -v grep |grep nginx<br>root     12028 12009  0 Feb20 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      12068 12028  0 Feb20 ?        00:00:00 nginx: worker process<br><br><span class="hljs-comment"># pscap 会更加友好的显示 Linux 内核功能，使用 pscap 需要下载 libcap-ng-utils 包，下载命令为 yum install -y libcap-ng-utils</span><br>$ pscap | awk <span class="hljs-string">'NR==1 || /12028/ &#123; print &#125;'</span><br>ppid  pid   name        <span class="hljs-built_in">command</span>           capabilities<br>12009 12028 root        nginx             chown, dac_override, fowner, fsetid, <span class="hljs-built_in">kill</span>, setgid, setuid, setpcap, net_bind_service, net_raw, sys_chroot, mknod, audit_write, setfcap<br></code></pre></td></tr></table></figure>
+<h2 id="容器默认未授权的内核功能"><a href="#容器默认未授权的内核功能" class="headerlink" title="容器默认未授权的内核功能"></a>容器默认未授权的内核功能</h2><p>我们再来看容器默认未被授权的内核功能：</p>
+<table>
+<thead>
+<tr>
+<th>Capability Key</th>
+<th>Capability Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SYS_MODULE</td>
+<td>允许加载和卸载内核模块</td>
+</tr>
+<tr>
+<td>SYS_RAWIO</td>
+<td>允许修改内存</td>
+</tr>
+<tr>
+<td>SYS_PACCT</td>
+<td>允许打开或者关闭进程审计</td>
+</tr>
+<tr>
+<td>SYS_ADMIN</td>
+<td>允许执行一系列的系统管理操作，包括卸载挂载文件系统、配置磁盘配额、打开关闭交换分区等</td>
+</tr>
+<tr>
+<td>SYS_NICE</td>
+<td>允许修改进程的 Nice 值，即进程的调度策略与优先级</td>
+</tr>
+<tr>
+<td>SYS_RESOURCE</td>
+<td>允许忽略资源限制</td>
+</tr>
+<tr>
+<td>SYS_TIME</td>
+<td>允许修改系统时间与硬件时间</td>
+</tr>
+<tr>
+<td>SYS_TTY_CONFIG</td>
+<td>允许配置 TTY 设备</td>
+</tr>
+<tr>
+<td>AUDIT_CONTROL</td>
+<td>允许启动或关闭并配置内核审计系统</td>
+</tr>
+<tr>
+<td>MAC_ADMIN</td>
+<td>允许配置 MAC 地址</td>
+</tr>
+<tr>
+<td>MAC_OVERRIDE</td>
+<td>忽略 MAC 访问控制策略</td>
+</tr>
+<tr>
+<td>NET_ADMIN</td>
+<td>允许进行一系列的网络配置，包括接口配置、IP 防火墙配置、路由配置、代理配置等</td>
+</tr>
+<tr>
+<td>SYSLOG</td>
+<td>允许进行系统日志相关操作</td>
+</tr>
+<tr>
+<td>DAC_READ_SEARCH</td>
+<td>允许忽略文件的读权限检查和目录的读权限检查</td>
+</tr>
+<tr>
+<td>LINUX_IMMUTABLE</td>
+<td>允许修改文件的 FS_APPEND_FL（只能添加）和 FS_IMMUTABLE_FL（不可修改）标记</td>
+</tr>
+<tr>
+<td>NET_BROADCAST</td>
+<td>允许网络广播和多播访问</td>
+</tr>
+<tr>
+<td>IPC_LOCK</td>
+<td>允许锁定共享片段</td>
+</tr>
+<tr>
+<td>IPC_OWNER</td>
+<td>允许忽略 IPC 对象权限检查</td>
+</tr>
+<tr>
+<td>SYS_PTRACE</td>
+<td>允许跟踪、检查进程并允许进程的内存数据传输</td>
+</tr>
+<tr>
+<td>SYS_BOOT</td>
+<td>允许重新启动系统并加载新的内核</td>
+</tr>
+<tr>
+<td>LEASE</td>
+<td>允许修改文件锁的 FL_LEASE 标记，即修改文件租约</td>
+</tr>
+<tr>
+<td>WAKE_ALARM</td>
+<td>允许触发唤醒系统的定时器</td>
+</tr>
+<tr>
+<td>BLOCK_SUSPEND</td>
+<td>允许阻塞系统挂起</td>
+</tr>
+</tbody>
+</table>
+<p>我们时使用默认分配内核功能来启动一个容器看下有哪些功能是不能使用的：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it  centos:7 /bin/bas<br>[root@6d9d1f70bffb /]<span class="hljs-comment"># date -s 15:22:22</span><br>date: cannot <span class="hljs-built_in">set</span> date: Operation not permitted<br><br>[root@6d9d1f70bffb /]<span class="hljs-comment">#ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
+<p>可以看到，在容器内无法修改系统时间、无法看到硬件设备等等。</p>
+<h2 id="配置容器的内核功能"><a href="#配置容器的内核功能" class="headerlink" title="配置容器的内核功能"></a>配置容器的内核功能</h2><p>Docker 提供了以下参数来修改容器的 Linux 内核功能：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">--<span class="hljs-built_in">cap</span>-add  <span class="hljs-comment"># 添加 Linux 内核功能</span><br>--<span class="hljs-built_in">cap</span>-drop  <span class="hljs-comment"># 删除 Linux 内核功能</span><br>--privileged  <span class="hljs-comment"># 添加此参数容器将获得 Root 权限，即拥有所有的内核功能</span><br>--device  <span class="hljs-comment"># 在不使用 --privileged 参数的情况下，此参数将允许你可以访问指定的设备</span><br></code></pre></td></tr></table></figure>
+<p>我们分别来介绍这几个参数。</p>
+<h3 id="配置容器特权模式"><a href="#配置容器特权模式" class="headerlink" title="配置容器特权模式"></a>配置容器特权模式</h3><p>在容器启动时如果添加了 <code>--privileged</code> 参数，那么容器将获得特权，即拥有所有的 Linux 内核功能，还包括访问宿主机所有的设备。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it --privileged centos:7 /bin/bash<br></code></pre></td></tr></table></figure>
+<p>如果拥有了所有的 Linux 内核功能，那么这个容器就可以为所欲为。</p>
+<p>比如说可以访问宿主机内所有的设备并创建或者修改或创建设备：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@5a4f3eb07bc9 /]<span class="hljs-comment"># ls /dev/</span><br>agpgart          crash  hpet          mqueue              ppp     sda2      stdin   tty13  tty20  tty28  tty35  tty42  tty5   tty57  tty7   uinput   vcs5   vcsa6<br>autofs           dm-0   hwrng         net                 ptmx    sg0       stdout  tty14  tty21  tty29  tty36  tty43  tty50  tty58  tty8   urandom  vcs6   vfio<br>bsg              dm-1   input         network_latency     pts     sg1       tty     tty15  tty22  tty3   tty37  tty44  tty51  tty59  tty9   usbmon0  vcsa   vga_arbiter<br>btrfs-control    dri    kmsg          network_throughput  random  shm       tty0    tty16  tty23  tty30  tty38  tty45  tty52  tty6   ttyS0  vcs      vcsa1  vhci<br>console          fb0    loop-control  null                raw     snapshot  tty1    tty17  tty24  tty31  tty39  tty46  tty53  tty60  ttyS1  vcs1     vcsa2  vhost-net<br>core             fd     mapper        nvram               rtc0    snd       tty10   tty18  tty25  tty32  tty4   tty47  tty54  tty61  ttyS2  vcs2     vcsa3  vmci<br>cpu              full   mcelog        oldmem              sda     sr0       tty11   tty19  tty26  tty33  tty40  tty48  tty55  tty62  ttyS3  vcs3     vcsa4  zero<br>cpu_dma_latency  fuse   mem           port                sda1    stderr    tty12   tty2   tty27  tty34  tty41  tty49  tty56  tty63  uhid   vcs4     vcsa5<br><br>$ fdisk /dev/sda<br>Welcome to fdisk (util-linux 2.23.2).<br><br>Changes will remain <span class="hljs-keyword">in</span> memory only, until you decide to write them.<br>Be careful before using the write <span class="hljs-built_in">command</span>.<br><br><br>Command (m <span class="hljs-keyword">for</span> <span class="hljs-built_in">help</span>):<br></code></pre></td></tr></table></figure>
+<p>比如说我们也可以修改系统时间：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">date -s 11:45<br>Thu Feb 21 11:45:00 UTC 2019<br></code></pre></td></tr></table></figure>
+<p>但添加 <code>--privileged</code> 参数来启动容器是很危险的一件事，如果攻击者能进入你的容器，那么他就可以很轻松的攻击宿主机系统了。</p>
+<p>因此不建议使用 <code>--privileged</code> 这个参数，除非你只是想确定你的容器内出现的问题是否是因为 Linux 内核功能不足导致的，可以使用此参数来进行验证。</p>
+<h3 id="添加或删除容器指定的内核功能"><a href="#添加或删除容器指定的内核功能" class="headerlink" title="添加或删除容器指定的内核功能"></a>添加或删除容器指定的内核功能</h3><p>我们可以使用 <code>--cap-add</code> 或 <code>--cap-drop</code> 按照需求为容器添加或删除指定的内核功能：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -ti --<span class="hljs-built_in">cap</span>-add SYS_TIME centos:7 /bin/bash<br>[root@8f1df0bcd091 /]<span class="hljs-comment"># date -s 13:52:00</span><br>Thu Feb 21 13:52:00 UTC 201<br></code></pre></td></tr></table></figure>
+<p>也可以添加所有的 Linux 内核功能，但无法访问宿主机的设备：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -ti --<span class="hljs-built_in">cap</span>-add ALL centos:7 /bin/bash<br>[root@947367204d1c /]<span class="hljs-comment"># ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
+<p>如果想让一个容器安全性大幅度的提升，我们通常采取以下做法：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d -p 80:80 \<br>    --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add CHOWN --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add SETGID --<span class="hljs-built_in">cap</span>-add SETUID \<br>    --name nginx nginx:1.14.2<br>4a1737b5a07ea107c6cd15e00880fd1fd2385d5933b73fee3eda488a82ffb8cd<br><br>$ pscap<br>...<br>17066 17085 root        nginx             chown, setgid, setuid, net_bind_service<br></code></pre></td></tr></table></figure>
+<p>那么有个问题，怎么知道一个容器究竟需要哪些 Linux 内核功能呢？</p>
+<p>不断的尝试和修正似乎是最简单的方法：</p>
+<ol>
+<li><p>首先，Nginx 容器肯定需要绑定端口，并且端口为 80，小于 1024。因此我首先想到的第一个权限是：<code>NET_BIND_SERVICE</code>：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE nginx:1.14.2<br>2019/02/21 14:30:26 [emerg] 1<span class="hljs-comment">#1: chown("/var/cache/nginx/client_temp", 101) failed (1: Operation not permitted)</span><br>nginx: [emerg] chown(<span class="hljs-string">"/var/cache/nginx/client_temp"</span>, 101) failed (1: Operation not permitted)<br></code></pre></td></tr></table></figure>
 </li>
-<li><p>我们最好准备一个专用的返回文本或页面来提供给健康检查机制使用。</p>
+<li><p>Nginx 还需要创建临时文件并配置它们的属主，因此我们还需添加权限：<code>CHOWN</code>： </p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add CHOWN nginx:1.14.2<br>2019/02/21 14:32:59 [emerg] 6<span class="hljs-comment">#6: setgid(101) failed (1: Operation not permitted)</span><br>2019/02/21 14:32:59 [alert] 1<span class="hljs-comment">#1: worker process 6 exited with fatal code 2 and cannot be respawned</span><br></code></pre></td></tr></table></figure>
 </li>
-<li><p>我们可以根据健康检查的返回状态码来更准确的监控容器是否可用，Kubernetes 也会根据健康检查返回的状态来判断容器是否可用执行对应的自动化操作。</p>
+<li><p>这样似乎运行起来了，但是 Nginx 的 Worker 进程还是 root 用户，还是少了权限能让 Nginx 主进程可以修改子进程的 GID 和 UID，所以我们还需要添加权限： <code>SETGID</code> 和 <code>SETUID</code>：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add CHOWN --<span class="hljs-built_in">cap</span>-add SETGID --<span class="hljs-built_in">cap</span>-add SETUID nginx:1.14.2<br></code></pre></td></tr></table></figure>
 </li>
 </ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/reference/run/#healthcheck" target="_blank" rel="noopener">Docker HEALTHCHECK</a></p>
+<p>至此，我们确认了 Nginx 容器所需要的 Linux 内核功能。</p>
+<p>但也有可能漏掉一个容器进程很少会用到的权限，所以需要你对 Linux 内核功能还有程序所需要使用的内核功能有个全面的了解才能够游刃有余，能在提升容器安全性的同时又能保证程序正常运行。</p>
+<h3 id="添加容器可以访问的设备"><a href="#添加容器可以访问的设备" class="headerlink" title="添加容器可以访问的设备"></a>添加容器可以访问的设备</h3><p>我们刚才使用 <code>--cap-add ALL</code> 参数也无法访问宿主机的设备，那么如何在不使用 <code>--privileged</code> 参数的前提下，能够访问宿主机的设备呢。</p>
+<p>我们可以使用 <code>--device</code> 将宿主机的设备映射至容器内，这样就可以在容器内访问到宿主机的设备了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it --device /dev/sda:/dev/sda  centos:7 /bin/bash<br>[root@63fa1358138d /]<span class="hljs-comment"># ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  sda  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
+<p>我们之前在使用压测时也映射过磁盘设备：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -it --device /dev/sda:/dev/sda --device-read-iops /dev/sda:100 centos:7 \<br>    dd iflag=direct,nonblock <span class="hljs-keyword">if</span>=/dev/sda of=/dev/null bs=1k count=1000<br>1000+0 records <span class="hljs-keyword">in</span><br>1000+0 records out<br>1024000 bytes (1.0 MB) copied, 9.91246 s, 103 kB/s<br></code></pre></td></tr></table></figure>
+<p>所以，我们可以使用 <code>--cap-add</code> 与 <code>--device</code> 这两个参数的结合，达到一个需要基于设备创建文件系统的容器。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>通常，对于安全性要求不高的容器，我们使用容器默认的 Linux 内核权限即可。</p>
+</li>
+<li><p>如果怀疑是容器内核功能权限不够导致重启内进程出现问题，我们可以使用 <code>--privileged</code> 开放容器所有的内核功能包括访问宿主机设备来确定是否是因为缺少内核功能导致的。但最好不要在生产环境中使用这个参数，会大幅度的降低容器的安全性。</p>
+</li>
+<li><p>如果为容器需要添加或者删除 Linux 内核功能或者访问设备，那么我们可以使用 <code>--cap-add</code> 和 <code>--cap-frop</code> 与 <code>--device</code> 参数结合使用。</p>
+</li>
+<li><p><code>--privileged</code> 等于 <code>--cap-add ALL</code> 加上 <code>--device</code> 映射所有的宿主机设备。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a href="https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities" target="_blank" rel="noopener">Runtime privilege and Linux capabilities</a></p>
+</li>
+<li><p><a href="https://github.com/opencontainers/runc/tree/master/libcontainer" target="_blank" rel="noopener">Libcontainer Runc</a></p>
+</li>
+<li><p><a href="http://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank" rel="noopener">capabilities(7) - Linux man page</a></p>
+</li>
+</ul>
 
       
     </main>
@@ -814,7 +1006,7 @@
   
   <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
     <div class="post-block">
-      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.6 Docker 内核能力配置/">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.7 Docker 健康检查/">
       <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
         <meta itemprop="name" content="Chris">
         <meta itemprop="description" content>
@@ -826,7 +1018,7 @@
     </div>
     <header class="post-header">
       <h1 class="post-title" itemprop="name headline">
-        <a class="post-title-link post-title-link-external" href="/2019/03/22/Docker/1.6 Docker 内核能力配置/" itemprop="url">Docker 数据卷的使用与挂载主机目录</a>
+        <a class="post-title-link post-title-link-external" href="/2019/03/22/Docker/1.7 Docker 健康检查/" itemprop="url">健康检查</a>
       </h1>
       <div class="post-meta">
         
@@ -848,255 +1040,63 @@
     </header>
     <main class="post-main" itemprop="articleBody">
       
-      <h1 id="1-6-Docker-内核能力配置"><a href="#1-6-Docker-内核能力配置" class="headerlink" title="1.6 Docker 内核能力配置"></a>1.6 Docker 内核能力配置</h1><p>Linux 内核定义了一些特殊的权限，即所谓的<strong>能力（Capability）</strong>，把这些权限分配给进程后，进程就能够获得更多的系统权限。可用的内核能力涵盖广泛的功能，从更改系统时间到开启网络套接字。所以如果某个进程拥有完全的 Root 权限，即拥有所有的内核能力，那么这个进程是很危险的，很可能被攻击者利用，并获得系统的 Root 权限。</p>
-<p>我们可以使用 <code>getcap</code> 命令获取程序所拥有的 Linux 内核功能。比如说 Ping 这个程序，执行时只需要获取一些关于网络的内核权限，所以默认会给 Ping 分配有限的权限使你使用 Ping 的时候更加安全：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">getcap</span> /bin/ping<br>/bin/ping = cap_net_admin,cap_net_raw+p<br></code></pre></td></tr></table></figure>
-<p>我们也可以使用 <code>getpcaps</code> 来获取进程所拥有的 Linux 内核功能。比如说 NetworkManaget 这个进程所拥有的 Linux 内核功能为：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep NetworkManager<br>root      5745     1  0 Feb19 ?        00:00:03 /usr/sbin/NetworkManager --no-daemon<br><br>$ getpcaps 5745<br>Capabilities <span class="hljs-keyword">for</span> `5745<span class="hljs-string">': = cap_dac_override,cap_kill,cap_setgid,cap_setuid,cap_net_bind_service,cap_net_admin,cap_net_raw,cap_sys_module,cap_sys_chroot,cap_sys_admin,cap_audit_write+ep</span><br></code></pre></td></tr></table></figure>
-<p>相关 Linux 内核功能参考<a href="http://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank" rel="noopener">capabilities(7) - Linux man page</a>。</p>
-<p>我们之前介绍过，容器的本质其实就是一个进程。那么容器自然也可以获取或者限制 Linux 内核的能力。</p>
-<p>容器对于 Linux 内核能力配置的使用非常少，但是有些情况又很重要：</p>
+      <h1 id="Docker-健康检查"><a href="#Docker-健康检查" class="headerlink" title="Docker 健康检查"></a>Docker 健康检查</h1><p>我们运行容器时，查看容器状态时，只显示容器是否正在运行。</p>
+<p>如果出现这种情况：容器内的进程仍在运行，但是陷入了死循环出现假死状态，不能响应新的请求。Docker 是没有办法去判断这个容器内的服务是不可用的。</p>
+<p>我们来模拟这种情况：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d -p 80:80 --name nginx nginx:1.14.2<br>9a340f69249f387475bd22c08dbb96f4cae7712dab59f9af007a78589a2b0d01<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   3 minutes ago       Up 3 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br>HTTP/1.1 200 OK<br>Server: nginx/1.14.2<br>Date: Thu, 21 Feb 2019 18:16:21 GMT<br>Content-Type: text/html<br>Content-Length: 612<br>Last-Modified: Tue, 04 Dec 2018 14:44:49 GMT<br>Connection: keep-alive<br>ETag: <span class="hljs-string">"5c0692e1-264"</span><br>Accept-Ranges: bytes<br></code></pre></td></tr></table></figure>
+<p>我们只能看到状态是 <code>UP</code> 状态，并且 Nginx 主页可以访问。</p>
+<p>我们暂停进程：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     28760 28741  0 02:09 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      28798 28760  0 02:09 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 28760 28798<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   9 minutes ago       Up 9 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>注：如果想恢复暂停的容器，发送 SIGCONT 信号： <code>kill -s SIGCONT &lt;进程 ID&gt;</code></p>
+</blockquote>
+<p>此时我们看到的状态依然是 <code>UP</code> 状态，看不出任何问题，但是 Nginx 主页已经无法访问。</p>
+<p>所以我们需要利用健康检查机制来检测服务的可用性，防止类似于以上进程还在但服务无法访问的情况。</p>
+<h2 id="容器添加健康检查"><a href="#容器添加健康检查" class="headerlink" title="容器添加健康检查"></a>容器添加健康检查</h2><p>Docker 提供了原生的健康检查实现，对应的参数为：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">--health-cmd  <span class="hljs-comment"># 执行一个健康检查命令</span><br>--health-interval  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查的执行的间隔时间（单位：ms、s 、m、h）</span><br>--health-retries  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令失败重试的次数</span><br>--health-timeout  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令超时时间（单位：ms、s 、m、h）</span><br></code></pre></td></tr></table></figure>
+<p>由于 Nginx 官方容器内没有 <code>curl</code> 命令，所以我们还需要制作一个带 <code>curl</code> 命令的 Nginx 容器。</p>
+<p>Dockerfile 如下：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">FROM nginx:1.14.2<br><br>RUN apt-get update -y &amp;&amp; apt-get install -y curl<br></code></pre></td></tr></table></figure>
+<p>在 Dockerfile 同级目录下构建镜像：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ tree<br>.<br>└── Dockerfile<br><br>0 directories, 1 file<br><br>$ docker image build -t nginx:1.14.2 .<br>...<br></code></pre></td></tr></table></figure>
+<p>现在我们来执行一个带有健康检查机制的容器：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    -p 80:80 \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-retries 5 \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>09118d61118af403dae9b33cf1efbaac36bd3162052eba3aa4c4b344efb61e1b<br></code></pre></td></tr></table></figure>
+<p>此时我们在来看容器的运行状态：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                        PORTS                NAMES<br>09118d61118a        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   About a minute ago   Up About a minute (healthy)   0.0.0.0:80-&gt;80/tcp   nginx<br></code></pre></td></tr></table></figure>
+<p>会发现查看容器的状态多了一种状态：<code>healthy</code>，说明这个容器是健康的。</p>
+<p>我们使用 <code>docker container inspect</code> 命令来获取健康检查的记录：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T02:37:59.86587781+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T02:38:00.02983152+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;title&gt;Welcome to nginx!&lt;/title&gt;\n&lt;style&gt;\n    body &#123;\n        width: 35em;\n        margin: 0 auto;\n        font-family: Tahoma, Verdana, Arial, sans-serif;\n    &#125;\n&lt;/style&gt;\n&lt;/head&gt;\n&lt;body&gt;\n&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;\n&lt;p&gt;If you see this page, the nginx web server is successfully installed and\nworking. Further configuration is required.&lt;/p&gt;\n\n&lt;p&gt;For online documentation and support please refer to\n&lt;a href=\"http://nginx.org/\"&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;\nCommercial support is available at\n&lt;a href=\"http://nginx.com/\"&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;\n\n&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们再来暂停进程：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     10198 10179  0 03:01 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      10233 10198  0 03:01 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 10198 10233<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS                NAMES<br>30f2c0ae85df        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   8 minutes ago       Up 8 minutes (unhealthy)   0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"unhealthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 6,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:10:15.499220798+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:10:17.499541229+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: -1,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"Health check exceeded timeout (2s)"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这样，我们就可以准确的知道容器内的服务是否可用。在进行监控或者自动化时就可以根据容器的健康检查状态返回的退出码（ExitCode）来进行判断了。</p>
+<p>我们指定的健康检查命令为 <code>curl --silent --fail --connect-timeout 3 http://localhost || exit 1</code>，这条命令表示如果执行成功，则返回的值为 0，如果执行失败，则返回值为 1。</p>
+<p><strong>指定健康检查的命令的返回值决定了容器的状态</strong>，可能的值为：</p>
 <ul>
-<li><p>比如说容器内的时间是无法隔离的，和宿主机的时间是共享的，但是容器内是不能修改系统时间的，必须要为容器加上修改时间的内核能力（SYS_TIME）才能修改系统时间，这对于需要能修改时间的容器（NTP 容器）是很重要的；</p>
+<li><p>0：healthy - 容器健康，可以使用；</p>
 </li>
-<li><p>比如说容器内是没办法修改网络的，如果想在某个容器内管理网络，也必须加上网络管理的内核能力（NET_ADMIN）才能修改网络。</p>
+<li><p>1：unhealthy - 容器不健康，需要诊断；</p>
+</li>
+<li><p>2：reserved - 保留，不要使用这个返回值。</p>
 </li>
 </ul>
-<p>还有一种情况，如果对安全性要求很高的公司，限制容器的 Linux 内核能力将会大幅度的提高系统的安全性。</p>
-<p>我们这里只是简单介绍容器对于 Linux 内核能力的配置，只是为了容器内运行某个程序时出现权限不足时能够想到为容器提权。</p>
-<h2 id="容器默认授权的内核功能"><a href="#容器默认授权的内核功能" class="headerlink" title="容器默认授权的内核功能"></a>容器默认授权的内核功能</h2><p>默认情况下，Docker 容器是「非特权」的，即不是拥有完全的 Root 权限。</p>
-<p>我们来看下 Docker 默认拥有的 Linux 内核功能：</p>
-<table>
-<thead>
-<tr>
-<th>Capability Key</th>
-<th>Capability Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SETPCAP</td>
-<td>允许修改其他进程内核能力（容器主进程只能看到子进程也就是容器内的进程）</td>
-</tr>
-<tr>
-<td>MKNOD</td>
-<td>允许使用 mknod(2) 创建特殊文件（设备文件）</td>
-</tr>
-<tr>
-<td>AUDIT_WRITE</td>
-<td>允许向内核审计日志写入记录</td>
-</tr>
-<tr>
-<td>CHOWN</td>
-<td>允许改变文件的所有权（可以参考 chown 命令）</td>
-</tr>
-<tr>
-<td>NET_RAW</td>
-<td>允许使用 RAW 与 套接字（即 IP:Port）</td>
-</tr>
-<tr>
-<td>DAC_OVERRIDE</td>
-<td>允许忽略文件的读、写和执行权限的检查（即忽略文件的 DAC 访问限制）</td>
-</tr>
-<tr>
-<td>FOWNER</td>
-<td>允许忽略文件属主 ID 必须和进程用户 ID 相匹配的限制</td>
-</tr>
-<tr>
-<td>FSETID</td>
-<td>允许设置文件的 setuid 位（参考 chmod 命令）</td>
-</tr>
-<tr>
-<td>KILL</td>
-<td>允许对不属于自己的进程发送信号（参考 kill 命令）</td>
-</tr>
-<tr>
-<td>SETGID</td>
-<td>允许改变进程的组 ID</td>
-</tr>
-<tr>
-<td>SETUID</td>
-<td>允许改变进程的用户 ID</td>
-</tr>
-<tr>
-<td>NET_BIND_SERVICE</td>
-<td>允许将套接字（IP:Port）绑定特权接口（即端口号 Port 小于 1024）</td>
-</tr>
-<tr>
-<td>SYS_CHROOT</td>
-<td>允许改变进程的根目录（参考 chroot 命令）</td>
-</tr>
-<tr>
-<td>SETFCAP</td>
-<td>允许修改文件的内核能力（参考 setcap 命令）</td>
-</tr>
-</tbody>
-</table>
-<p>我们可以使用 <code>pscap</code> 来获取容器默认的内核能力：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d --name nginx nginx:1.14.2<br>a1919f19e91fb89c5d15aaa02f457cc6d1cf41d163140adbdd033401cc628d3a<br><br>$ ps -ef | grep -v grep |grep nginx<br>root     12028 12009  0 Feb20 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      12068 12028  0 Feb20 ?        00:00:00 nginx: worker process<br><br><span class="hljs-comment"># pscap 会更加友好的显示 Linux 内核功能，使用 pscap 需要下载 libcap-ng-utils 包，下载命令为 yum install -y libcap-ng-utils</span><br>$ pscap | awk <span class="hljs-string">'NR==1 || /12028/ &#123; print &#125;'</span><br>ppid  pid   name        <span class="hljs-built_in">command</span>           capabilities<br>12009 12028 root        nginx             chown, dac_override, fowner, fsetid, <span class="hljs-built_in">kill</span>, setgid, setuid, setpcap, net_bind_service, net_raw, sys_chroot, mknod, audit_write, setfcap<br></code></pre></td></tr></table></figure>
-<h2 id="容器默认未授权的内核功能"><a href="#容器默认未授权的内核功能" class="headerlink" title="容器默认未授权的内核功能"></a>容器默认未授权的内核功能</h2><p>我们再来看容器默认未被授权的内核功能：</p>
-<table>
-<thead>
-<tr>
-<th>Capability Key</th>
-<th>Capability Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>SYS_MODULE</td>
-<td>允许加载和卸载内核模块</td>
-</tr>
-<tr>
-<td>SYS_RAWIO</td>
-<td>允许修改内存</td>
-</tr>
-<tr>
-<td>SYS_PACCT</td>
-<td>允许打开或者关闭进程审计</td>
-</tr>
-<tr>
-<td>SYS_ADMIN</td>
-<td>允许执行一系列的系统管理操作，包括卸载挂载文件系统、配置磁盘配额、打开关闭交换分区等</td>
-</tr>
-<tr>
-<td>SYS_NICE</td>
-<td>允许修改进程的 Nice 值，即进程的调度策略与优先级</td>
-</tr>
-<tr>
-<td>SYS_RESOURCE</td>
-<td>允许忽略资源限制</td>
-</tr>
-<tr>
-<td>SYS_TIME</td>
-<td>允许修改系统时间与硬件时间</td>
-</tr>
-<tr>
-<td>SYS_TTY_CONFIG</td>
-<td>允许配置 TTY 设备</td>
-</tr>
-<tr>
-<td>AUDIT_CONTROL</td>
-<td>允许启动或关闭并配置内核审计系统</td>
-</tr>
-<tr>
-<td>MAC_ADMIN</td>
-<td>允许配置 MAC 地址</td>
-</tr>
-<tr>
-<td>MAC_OVERRIDE</td>
-<td>忽略 MAC 访问控制策略</td>
-</tr>
-<tr>
-<td>NET_ADMIN</td>
-<td>允许进行一系列的网络配置，包括接口配置、IP 防火墙配置、路由配置、代理配置等</td>
-</tr>
-<tr>
-<td>SYSLOG</td>
-<td>允许进行系统日志相关操作</td>
-</tr>
-<tr>
-<td>DAC_READ_SEARCH</td>
-<td>允许忽略文件的读权限检查和目录的读权限检查</td>
-</tr>
-<tr>
-<td>LINUX_IMMUTABLE</td>
-<td>允许修改文件的 FS_APPEND_FL（只能添加）和 FS_IMMUTABLE_FL（不可修改）标记</td>
-</tr>
-<tr>
-<td>NET_BROADCAST</td>
-<td>允许网络广播和多播访问</td>
-</tr>
-<tr>
-<td>IPC_LOCK</td>
-<td>允许锁定共享片段</td>
-</tr>
-<tr>
-<td>IPC_OWNER</td>
-<td>允许忽略 IPC 对象权限检查</td>
-</tr>
-<tr>
-<td>SYS_PTRACE</td>
-<td>允许跟踪、检查进程并允许进程的内存数据传输</td>
-</tr>
-<tr>
-<td>SYS_BOOT</td>
-<td>允许重新启动系统并加载新的内核</td>
-</tr>
-<tr>
-<td>LEASE</td>
-<td>允许修改文件锁的 FL_LEASE 标记，即修改文件租约</td>
-</tr>
-<tr>
-<td>WAKE_ALARM</td>
-<td>允许触发唤醒系统的定时器</td>
-</tr>
-<tr>
-<td>BLOCK_SUSPEND</td>
-<td>允许阻塞系统挂起</td>
-</tr>
-</tbody>
-</table>
-<p>我们时使用默认分配内核功能来启动一个容器看下有哪些功能是不能使用的：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it  centos:7 /bin/bas<br>[root@6d9d1f70bffb /]<span class="hljs-comment"># date -s 15:22:22</span><br>date: cannot <span class="hljs-built_in">set</span> date: Operation not permitted<br><br>[root@6d9d1f70bffb /]<span class="hljs-comment">#ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
-<p>可以看到，在容器内无法修改系统时间、无法看到硬件设备等等。</p>
-<h2 id="配置容器的内核功能"><a href="#配置容器的内核功能" class="headerlink" title="配置容器的内核功能"></a>配置容器的内核功能</h2><p>Docker 提供了以下参数来修改容器的 Linux 内核功能：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">--<span class="hljs-built_in">cap</span>-add  <span class="hljs-comment"># 添加 Linux 内核功能</span><br>--<span class="hljs-built_in">cap</span>-drop  <span class="hljs-comment"># 删除 Linux 内核功能</span><br>--privileged  <span class="hljs-comment"># 添加此参数容器将获得 Root 权限，即拥有所有的内核功能</span><br>--device  <span class="hljs-comment"># 在不使用 --privileged 参数的情况下，此参数将允许你可以访问指定的设备</span><br></code></pre></td></tr></table></figure>
-<p>我们分别来介绍这几个参数。</p>
-<h3 id="配置容器特权模式"><a href="#配置容器特权模式" class="headerlink" title="配置容器特权模式"></a>配置容器特权模式</h3><p>在容器启动时如果添加了 <code>--privileged</code> 参数，那么容器将获得特权，即拥有所有的 Linux 内核功能，还包括访问宿主机所有的设备。</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it --privileged centos:7 /bin/bash<br></code></pre></td></tr></table></figure>
-<p>如果拥有了所有的 Linux 内核功能，那么这个容器就可以为所欲为。</p>
-<p>比如说可以访问宿主机内所有的设备并创建或者修改或创建设备：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@5a4f3eb07bc9 /]<span class="hljs-comment"># ls /dev/</span><br>agpgart          crash  hpet          mqueue              ppp     sda2      stdin   tty13  tty20  tty28  tty35  tty42  tty5   tty57  tty7   uinput   vcs5   vcsa6<br>autofs           dm-0   hwrng         net                 ptmx    sg0       stdout  tty14  tty21  tty29  tty36  tty43  tty50  tty58  tty8   urandom  vcs6   vfio<br>bsg              dm-1   input         network_latency     pts     sg1       tty     tty15  tty22  tty3   tty37  tty44  tty51  tty59  tty9   usbmon0  vcsa   vga_arbiter<br>btrfs-control    dri    kmsg          network_throughput  random  shm       tty0    tty16  tty23  tty30  tty38  tty45  tty52  tty6   ttyS0  vcs      vcsa1  vhci<br>console          fb0    loop-control  null                raw     snapshot  tty1    tty17  tty24  tty31  tty39  tty46  tty53  tty60  ttyS1  vcs1     vcsa2  vhost-net<br>core             fd     mapper        nvram               rtc0    snd       tty10   tty18  tty25  tty32  tty4   tty47  tty54  tty61  ttyS2  vcs2     vcsa3  vmci<br>cpu              full   mcelog        oldmem              sda     sr0       tty11   tty19  tty26  tty33  tty40  tty48  tty55  tty62  ttyS3  vcs3     vcsa4  zero<br>cpu_dma_latency  fuse   mem           port                sda1    stderr    tty12   tty2   tty27  tty34  tty41  tty49  tty56  tty63  uhid   vcs4     vcsa5<br><br>$ fdisk /dev/sda<br>Welcome to fdisk (util-linux 2.23.2).<br><br>Changes will remain <span class="hljs-keyword">in</span> memory only, until you decide to write them.<br>Be careful before using the write <span class="hljs-built_in">command</span>.<br><br><br>Command (m <span class="hljs-keyword">for</span> <span class="hljs-built_in">help</span>):<br></code></pre></td></tr></table></figure>
-<p>比如说我们也可以修改系统时间：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">date -s 11:45<br>Thu Feb 21 11:45:00 UTC 2019<br></code></pre></td></tr></table></figure>
-<p>但添加 <code>--privileged</code> 参数来启动容器是很危险的一件事，如果攻击者能进入你的容器，那么他就可以很轻松的攻击宿主机系统了。</p>
-<p>因此不建议使用 <code>--privileged</code> 这个参数，除非你只是想确定你的容器内出现的问题是否是因为 Linux 内核功能不足导致的，可以使用此参数来进行验证。</p>
-<h3 id="添加或删除容器指定的内核功能"><a href="#添加或删除容器指定的内核功能" class="headerlink" title="添加或删除容器指定的内核功能"></a>添加或删除容器指定的内核功能</h3><p>我们可以使用 <code>--cap-add</code> 或 <code>--cap-drop</code> 按照需求为容器添加或删除指定的内核功能：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -ti --<span class="hljs-built_in">cap</span>-add SYS_TIME centos:7 /bin/bash<br>[root@8f1df0bcd091 /]<span class="hljs-comment"># date -s 13:52:00</span><br>Thu Feb 21 13:52:00 UTC 201<br></code></pre></td></tr></table></figure>
-<p>也可以添加所有的 Linux 内核功能，但无法访问宿主机的设备：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -ti --<span class="hljs-built_in">cap</span>-add ALL centos:7 /bin/bash<br>[root@947367204d1c /]<span class="hljs-comment"># ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
-<p>如果想让一个容器安全性大幅度的提升，我们通常采取以下做法：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d -p 80:80 \<br>    --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add CHOWN --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add SETGID --<span class="hljs-built_in">cap</span>-add SETUID \<br>    --name nginx nginx:1.14.2<br>4a1737b5a07ea107c6cd15e00880fd1fd2385d5933b73fee3eda488a82ffb8cd<br><br>$ pscap<br>...<br>17066 17085 root        nginx             chown, setgid, setuid, net_bind_service<br></code></pre></td></tr></table></figure>
-<p>那么有个问题，怎么知道一个容器究竟需要哪些 Linux 内核功能呢？</p>
-<p>不断的尝试和修正似乎是最简单的方法：</p>
-<ol>
-<li><p>首先，Nginx 容器肯定需要绑定端口，并且端口为 80，小于 1024。因此我首先想到的第一个权限是：<code>NET_BIND_SERVICE</code>：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE nginx:1.14.2<br>2019/02/21 14:30:26 [emerg] 1<span class="hljs-comment">#1: chown("/var/cache/nginx/client_temp", 101) failed (1: Operation not permitted)</span><br>nginx: [emerg] chown(<span class="hljs-string">"/var/cache/nginx/client_temp"</span>, 101) failed (1: Operation not permitted)<br></code></pre></td></tr></table></figure>
-</li>
-<li><p>Nginx 还需要创建临时文件并配置它们的属主，因此我们还需添加权限：<code>CHOWN</code>： </p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add CHOWN nginx:1.14.2<br>2019/02/21 14:32:59 [emerg] 6<span class="hljs-comment">#6: setgid(101) failed (1: Operation not permitted)</span><br>2019/02/21 14:32:59 [alert] 1<span class="hljs-comment">#1: worker process 6 exited with fatal code 2 and cannot be respawned</span><br></code></pre></td></tr></table></figure>
-</li>
-<li><p>这样似乎运行起来了，但是 Nginx 的 Worker 进程还是 root 用户，还是少了权限能让 Nginx 主进程可以修改子进程的 GID 和 UID，所以我们还需要添加权限： <code>SETGID</code> 和 <code>SETUID</code>：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it -p 80:80 --<span class="hljs-built_in">cap</span>-drop ALL --<span class="hljs-built_in">cap</span>-add NET_BIND_SERVICE --<span class="hljs-built_in">cap</span>-add CHOWN --<span class="hljs-built_in">cap</span>-add SETGID --<span class="hljs-built_in">cap</span>-add SETUID nginx:1.14.2<br></code></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>至此，我们确认了 Nginx 容器所需要的 Linux 内核功能。</p>
-<p>但也有可能漏掉一个容器进程很少会用到的权限，所以需要你对 Linux 内核功能还有程序所需要使用的内核功能有个全面的了解才能够游刃有余，能在提升容器安全性的同时又能保证程序正常运行。</p>
-<h3 id="添加容器可以访问的设备"><a href="#添加容器可以访问的设备" class="headerlink" title="添加容器可以访问的设备"></a>添加容器可以访问的设备</h3><p>我们刚才使用 <code>--cap-add ALL</code> 参数也无法访问宿主机的设备，那么如何在不使用 <code>--privileged</code> 参数的前提下，能够访问宿主机的设备呢。</p>
-<p>我们可以使用 <code>--device</code> 将宿主机的设备映射至容器内，这样就可以在容器内访问到宿主机的设备了：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run --rm -it --device /dev/sda:/dev/sda  centos:7 /bin/bash<br>[root@63fa1358138d /]<span class="hljs-comment"># ls /dev/</span><br>console  core  fd  full  mqueue  null  ptmx  pts  random  sda  shm  stderr  stdin  stdout  tty  urandom  zero<br></code></pre></td></tr></table></figure>
-<p>我们之前在使用压测时也映射过磁盘设备：</p>
-<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -it --device /dev/sda:/dev/sda --device-read-iops /dev/sda:100 centos:7 \<br>    dd iflag=direct,nonblock <span class="hljs-keyword">if</span>=/dev/sda of=/dev/null bs=1k count=1000<br>1000+0 records <span class="hljs-keyword">in</span><br>1000+0 records out<br>1024000 bytes (1.0 MB) copied, 9.91246 s, 103 kB/s<br></code></pre></td></tr></table></figure>
-<p>所以，我们可以使用 <code>--cap-add</code> 与 <code>--device</code> 这两个参数的结合，达到一个需要基于设备创建文件系统的容器。</p>
+<h2 id="添加健康检查专用返回文本"><a href="#添加健康检查专用返回文本" class="headerlink" title="添加健康检查专用返回文本"></a>添加健康检查专用返回文本</h2><p>直接访问主页来执行健康检查有些不合适，我们还可以添加一个健康检查的配置：</p>
+<p>在 Nginx 配置文件中添加一条健康检查的匹配规则：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ cat /data/nginx/conf.d/default.conf | awk <span class="hljs-string">'! /^$/ &amp;&amp; ! /^[ ]?.*#/ &#123; print &#125;'</span><br>server &#123;<br>    listen       80;<br>    server_name  localhost;<br>    location / &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>    &#125;<br>    location /health &#123;<br>        add_header Content-Type <span class="hljs-string">"text/plain;charset=utf-8"</span>;<br>        <span class="hljs-built_in">return</span> 200 <span class="hljs-string">"ok"</span>;<br>    &#125;<br>    error_page   500 502 503 504  /50x.html;<br>    location = /50x.html &#123;<br>        root   /usr/share/nginx/html;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后运行挂载配置目录来运行 Nginx 容器：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    --name nginx \<br>    -p 80:80 \<br>    --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/data/nginx/conf.d/,dst=/etc/nginx/conf.d \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost/health || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>57f9378df04830a9e7081aff8efc13109b200799b11d2cd2d924a8ae276e8fc5<br></code></pre></td></tr></table></figure>
+<p>此时我们在获取健康检查记录就精简多了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:01:52.41008393+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:01:52.561938938+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"ok"</span><br>    &#125;<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>类似的，在 Java 程序中，也可以添加一个专用的接口提供给健康检查机制使用：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">@RestController<br>@RequestMapping(path = <span class="hljs-string">"/"</span>)<br>public class Healthz &#123;<br>    @GetMapping(path = <span class="hljs-string">"/health"</span>,produces = MediaType.TEXT_PLAIN_VALUE)<br>    public String <span class="hljs-function"><span class="hljs-title">healthz</span></span>()&#123;<br>        <span class="hljs-built_in">return</span> <span class="hljs-string">"ok"</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
-<li><p>通常，对于安全性要求不高的容器，我们使用容器默认的 Linux 内核权限即可。</p>
+<li><p>只是看容器是否正在运行时没办法保证服务是可用的，我们需要使用健康检查来确保服务是可用的。</p>
 </li>
-<li><p>如果怀疑是容器内核功能权限不够导致重启内进程出现问题，我们可以使用 <code>--privileged</code> 开放容器所有的内核功能包括访问宿主机设备来确定是否是因为缺少内核功能导致的。但最好不要在生产环境中使用这个参数，会大幅度的降低容器的安全性。</p>
+<li><p>我们最好准备一个专用的返回文本或页面来提供给健康检查机制使用。</p>
 </li>
-<li><p>如果为容器需要添加或者删除 Linux 内核功能或者访问设备，那么我们可以使用 <code>--cap-add</code> 和 <code>--cap-frop</code> 与 <code>--device</code> 参数结合使用。</p>
-</li>
-<li><p><code>--privileged</code> 等于 <code>--cap-add ALL</code> 加上 <code>--device</code> 映射所有的宿主机设备。</p>
+<li><p>我们可以根据健康检查的返回状态码来更准确的监控容器是否可用，Kubernetes 也会根据健康检查返回的状态来判断容器是否可用执行对应的自动化操作。</p>
 </li>
 </ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><p><a href="https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities" target="_blank" rel="noopener">Runtime privilege and Linux capabilities</a></p>
-</li>
-<li><p><a href="https://github.com/opencontainers/runc/tree/master/libcontainer" target="_blank" rel="noopener">Libcontainer Runc</a></p>
-</li>
-<li><p><a href="http://man7.org/linux/man-pages/man7/capabilities.7.html" target="_blank" rel="noopener">capabilities(7) - Linux man page</a></p>
-</li>
-</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/reference/run/#healthcheck" target="_blank" rel="noopener">Docker HEALTHCHECK</a></p>
 
       
     </main>
