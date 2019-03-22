@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#33363b">
+    <meta name="msapplication-TileColor" content="#33363b">
+    
+    
+    
+    
+    <meta name="keywords" content="Life, ARIA, Hexo">
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    
+    
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#33363b">
+    
+    
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    
+    
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    
+    
+    <link rel="alternate" href="/atom.xml" title="文成武略" type="application/atom+xml">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicons/favicon.ico">
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    
+    <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
+    
+    
+<link rel="stylesheet" type="text/css" href="/css/page.css">
+<link rel="stylesheet" type="text/css" href="/css/post.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="/css/atom-one-dark.css">
+    <link rel="stylesheet" type="text/css" href="/css/lightgallery.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script defer type="text/javascript" src="/js/util.js"></script>
+    <script defer type="text/javascript" src="/js/clipboard.min.js"></script>
+    <script defer type="text/javascript" src="/js/scrollspy.js"></script>
+    <script defer type="text/javascript" src="/js/fontawesome-all.min.js"></script>
+    <script defer type="text/javascript" src="/js/lightgallery.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-hash.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-pager.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-thumbnail.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-zoom.min.js"></script>
+    
+    <script defer src="/js/busuanzi.pure.mini.js"></script>
+    
+    
+    <script defer type="text/javascript" src="/js/search.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var searchPath = "search.xml";
+      if (searchPath.length === 0) {
+        searchPath = "search.xml";
+      }
+      var path = "/" + searchPath;
+      searchFunc(path, "search-input", "search-result");
+    });
+    </script>
+    
+    
+    <script defer type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var cb = null;
+      var els = $(".post figure.highlight");
+      if (els.length) {
+        // Enabled Hexo highlight line number.
+        $(els).each(function (i, e) {
+          $(e).before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout with line number.
+              return trigger.nextElementSibling.firstChild.firstChild.firstChild.lastChild.firstChild.firstChild;
+          }
+        });
+      } else {
+        // Disabled Hexo highlight line number.
+        els = $(".post pre code");
+        $(els).each(function (i, e) {
+          // Add button before pre, not code.
+          $(e).parent().before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout without line number.
+              return trigger.nextElementSibling.firstChild;
+          }
+        });
+      }
+      cb.on("success", function (e) {
+        e.clearSelection();
+        var trigger = e.trigger;
+        // Change button text as a user tip.
+        trigger.innerHTML = "已复制";
+        $(trigger).addClass("copied");
+        // Change button text back;
+        setTimeout(function () {
+          trigger.innerHTML = "复制";
+          $(trigger).removeClass("copied");
+        }, 1500);
+      });
+    });
+    </script>
+    
+    <script defer type="text/javascript" src="/js/custom.js"></script>
+    <title>文成武略</title>
+  </head>
+  <body itemscope itemtype="http://schema.org/WebPage" lang="zh_CN" data-spy="scroll" data-target=".list-group">
+    
+<header id="header" class="header" style="background: #33363b;">
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <h1 class="title"><a href="/">文成武略</a></h1>
+        <h2 class="subtitle"></h2>
+      </div>
+      
+      <div class="logo">
+        <img src="/images/logo.png" alt="logo">
+      </div>
+      
+    </div>
+    <nav id="nav" class="nav">
+      <a id="nav-toggle" class="nav-toggle" aria-hidden="true"><i class="fas fa-bars" aria-label="切换导航栏"></i></a>
+      <ul id="menu" role="menubar" aria-hidden="false">
+        
+        <li role="menuitem"><a href="/"><i class="fas fa-home"></i><span class="menu-text">首页</span></a></li>
+        
+        <li role="menuitem"><a href="/archives/"><i class="fas fa-archive"></i><span class="menu-text">归档</span></a></li>
+        
+        <li role="menuitem"><a href="/categories/"><i class="fas fa-th-list"></i><span class="menu-text">分类</span></a></li>
+        
+        <li role="menuitem"><a href="/tags/"><i class="fas fa-tags"></i><span class="menu-text">标签</span></a></li>
+        
+        <li role="menuitem"><a href="/about/"><i class="fas fa-user-edit"></i><span class="menu-text">关于</span></a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <main id="main" class="main">
+      <div class="container">
+        <div class="main-container">
+          <div class="content">
+            
+
+<div id="index" class="index page">
+  
+  <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
+    <div class="post-block">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.3 Docker 数据卷的使用与挂载主机目录/">
+      <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <meta itemprop="name" content="Chris">
+        <meta itemprop="description" content>
+        <meta itemprop="image" content="/images/avatar.png">
+      </span>
+      <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+        <meta itemprop="name" content="文成武略">
+      </span>
+    </div>
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link post-title-link-external" href="/2019/03/22/Docker/1.3 Docker 数据卷的使用与挂载主机目录/" itemprop="url">Docker 数据卷的使用与挂载主机目录</a>
+      </h1>
+      <div class="post-meta">
+        
+        <span class="post-date">
+          <i class="far fa-calendar-plus"></i><span><time title="post-date" itemprop="dateCreated datePublished" datetime="2019-03-22T09:10:11+08:00">2019-03-22 09:10:11</time></span>
+        </span>
+        
+        
+        
+        <span class="post-meta-divider divider">|</span>
+        
+        <span class="post-categories">
+          
+          <i class="far fa-folder-open"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/" itemprop="url" rel="index"><span itemprop="name">运维</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/" itemprop="url" rel="index"><span itemprop="name">容器</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/Dokcer/" itemprop="url" rel="index"><span itemprop="name">Dokcer</span></a></span>
+        </span>
+        
+        
+      </div>
+    </header>
+    <main class="post-main" itemprop="articleBody">
+      
+      <h1 id="1-3-Docker-数据卷的使用与挂载主机目录"><a href="#1-3-Docker-数据卷的使用与挂载主机目录" class="headerlink" title="1.3 Docker 数据卷的使用与挂载主机目录"></a>1.3 Docker 数据卷的使用与挂载主机目录</h1><p>容器运行时，会在容器内创建一层临时的可读写层。在容器内创建的所有文件都存储在这个临时的可读写层，当容器停止或者删除，这个可读写层会被清空。这意味着：<strong>当容器停止或删除后，在容器内变更的数据也会丢失</strong>。</p>
+<p>因此，我们需要把持久化的数据保存在宿主机上，保证容器停止或删除之后数据依然存在。</p>
+<p>Docker 容器中管理数据主要有两种方式：</p>
+<ul>
+<li><p>数据卷（Data Volumes）</p>
+</li>
+<li><p>挂载主机目录（Bind Mounts）</p>
+</li>
+</ul>
+<p>我们用一张官方的图来描述这两种方式：</p>
+<p><img src="./images/Docker数据卷类型.png" alt="Docker 数据卷类型"></p>
+<ul>
+<li><p>数据卷：存储在由 Docker 管理的主机文件系统中，Linux 系统上默认为 /var/lib/docker/volumes/ 目录下。</p>
+</li>
+<li><p>挂载主机目录：可以存储在主机文件系统上的任何位置。</p>
+</li>
+</ul>
+<h2 id="数据卷"><a href="#数据卷" class="headerlink" title="数据卷"></a>数据卷</h2><p>数据卷是一个可供一个或多个容器使用的特殊目录，它绕过 UFS（Docker 使用的联合文件系统），可以提供很多特性：</p>
+<ul>
+<li><p>数据卷可以在容器之间共享和重用；</p>
+</li>
+<li><p>数据卷同时适用于 Linux 和 Windows 容器；</p>
+</li>
+<li><p>数据卷更易与备份或迁移；</p>
+</li>
+<li><p>对数据卷的更新，不会影响镜像；</p>
+</li>
+<li><p>即使容器被删除，数据卷也会一直存在，除非手动删除数据卷。</p>
+</li>
+</ul>
+<p>首先我们来需要来创建一个 Docker 数据卷，Docker 提供了 <code>docker volume create</code> 命令来创建数据卷：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker volume create nginx<br>nginx<br></code></pre></td></tr></table></figure>
+<p>创建完成之后，我们使用 <code>docker volume ls</code> 来查看所有的数据卷：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker volume ls<br>DRIVER              VOLUME NAME<br><span class="hljs-built_in">local</span>               nginx<br></code></pre></td></tr></table></figure>
+<p>我们还可以使用 <code>docker volume inspect</code> 来查看指定数据卷的信息：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker volume inspect nginx<br>[<br>    &#123;<br>        <span class="hljs-string">"CreatedAt"</span>: <span class="hljs-string">"2019-02-14T14:40:40+08:00"</span>,<br>        <span class="hljs-string">"Driver"</span>: <span class="hljs-string">"local"</span>,<br>        <span class="hljs-string">"Labels"</span>: &#123;&#125;,<br>        <span class="hljs-string">"Mountpoint"</span>: <span class="hljs-string">"/var/lib/docker/volumes/nginx/_data"</span>,<br>        <span class="hljs-string">"Name"</span>: <span class="hljs-string">"nginx"</span>,<br>        <span class="hljs-string">"Options"</span>: &#123;&#125;,<br>        <span class="hljs-string">"Scope"</span>: <span class="hljs-string">"local"</span><br>    &#125;<br>]<br></code></pre></td></tr></table></figure>
+<p>有了数据卷，我们使用 <code>docker container run</code> 启动容器时，就可以使用 <code>-v</code> 或 <code>--mount</code> 参数来将数据卷挂载到容器里。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d -p 80:80 --name nginx \<br>    --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">source</span>=nginx,target=/usr/share/nginx/html \<br>    nginx:1.14.2<br>f690bf43c31de5aca3dd8ca036571d3402098fc76c89ced7320ced822bc824c7<br></code></pre></td></tr></table></figure>
+<p>我们可以使用 <code>docker container inspect</code> 命令来获取容器的挂载信息：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container inspect  -f <span class="hljs-string">"&#123;&#123; .Mounts | json &#125;&#125;"</span> nginx | jq<br>[<br>  &#123;<br>    <span class="hljs-string">"Type"</span>: <span class="hljs-string">"volume"</span>,<br>    <span class="hljs-string">"Name"</span>: <span class="hljs-string">"nginx"</span>,<br>    <span class="hljs-string">"Source"</span>: <span class="hljs-string">"/var/lib/docker/volumes/nginx/_data"</span>,<br>    <span class="hljs-string">"Destination"</span>: <span class="hljs-string">"/usr/share/nginx/html"</span>,<br>    <span class="hljs-string">"Driver"</span>: <span class="hljs-string">"local"</span>,<br>    <span class="hljs-string">"Mode"</span>: <span class="hljs-string">"z"</span>,<br>    <span class="hljs-string">"RW"</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-string">"Propagation"</span>: <span class="hljs-string">""</span><br>  &#125;<br>]<br></code></pre></td></tr></table></figure>
+<p>这时我们直接修改宿主机上 /var/lib/docker/volumes/nginx/_data 目录下的文件即可修改主页：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cd</span> /var/lib/docker/volumes/nginx/_data/<br><br>$ ls<br>50x.html  index.html<br><br>$ <span class="hljs-built_in">echo</span> <span class="hljs-string">'Wherever there are people, there is Jianghu'</span> &gt; index.html<br></code></pre></td></tr></table></figure>
+<p>此时访问 <a href="http://10.10.113.16" target="_blank" rel="noopener">http://10.10.113.16</a> ，就可以看到修改后的主页了。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ curl http://10.10.113.16<br>Wherever there are people, there is Jianghu<br></code></pre></td></tr></table></figure>
+<p>当我们删除容器时，如果不需要保存数据，记得使用 <code>docker volume rm</code> 命令删除数据卷以释放磁盘资源。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container rm -f nginx<br>nginx<br><br>$ docker volume rm nginx<br>nginx<br></code></pre></td></tr></table></figure>
+<p>我们还可以使用 <code>docker volume prune</code> 来清理无主的数据卷，如果不确定数据卷是否需要删除，慎用这个命令。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker volume prune<br>WARNING! This will remove all <span class="hljs-built_in">local</span> volumes not used by at least one container.<br>Are you sure you want to <span class="hljs-built_in">continue</span>? [y/N] y<br>Total reclaimed space: 0B<br></code></pre></td></tr></table></figure>
+<h2 id="挂载主机目录"><a href="#挂载主机目录" class="headerlink" title="挂载主机目录"></a>挂载主机目录</h2><p>有时候，我们需要将主机目录挂载至容器内。将主机目录作为一个数据卷：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ mkdir -p /data/nginx/<br><br>$ docker container run -d -p 80:80 --name nginx --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,<span class="hljs-built_in">source</span>=/data/nginx,target=/usr/share/nginx/html nginx:1.14.2<br>0c1b2623dee24f5e6866df2aa480055deb5c9da8927ff86aeea3cf838f7c2f65<br></code></pre></td></tr></table></figure>
+<p>我们在来查看容器内的挂载信息：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container inspect  -f <span class="hljs-string">"&#123;&#123; .Mounts | json &#125;&#125;"</span> nginx | jq<br>[<br>  &#123;<br>    <span class="hljs-string">"Type"</span>: <span class="hljs-string">"bind"</span>,<br>    <span class="hljs-string">"Source"</span>: <span class="hljs-string">"/data/nginx"</span>,<br>    <span class="hljs-string">"Destination"</span>: <span class="hljs-string">"/usr/share/nginx/html"</span>,<br>    <span class="hljs-string">"Mode"</span>: <span class="hljs-string">""</span>,<br>    <span class="hljs-string">"RW"</span>: <span class="hljs-literal">true</span>,<br>    <span class="hljs-string">"Propagation"</span>: <span class="hljs-string">"rprivate"</span><br>  &#125;<br>]<br></code></pre></td></tr></table></figure>
+<p>此时，我们就可以进入主机目录 /data/nginx/ 添加主页了。</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">cd</span> /data/nginx/<br><br>$ <span class="hljs-built_in">echo</span> <span class="hljs-built_in">test</span> &gt; index.html<br><br>$ curl http://10.10.113.16<br><span class="hljs-built_in">test</span><br></code></pre></td></tr></table></figure>
+<h2 id="v-或-–mount-的选择"><a href="#v-或-–mount-的选择" class="headerlink" title="-v 或 –mount 的选择"></a>-v 或 –mount 的选择</h2><p>我一直都习惯于用 <code>-v</code> 来挂载数据卷或者挂载主机宿主目录，但 <code>--mount</code> 参数更加明确。 </p>
+<p>对于刚接触 Docker 的用户来说，应该尝试使用 <code>--mount</code> 而不是 <code>-v</code> 参数。 对于已经对 <code>-v</code> 或者 <code>--volume</code> 已经很数据的用户，还是推荐使用 <code>--mount</code> 参数。</p>
+<p><strong>-v 或 –volume</strong>：由 3 个字段组成，用冒号（:）分隔。字段必须按照正确的顺序排列：</p>
+<ul>
+<li><p>第一个字段：对于命名卷，第一个字段是卷的名称。对于匿名卷，省略第一个字段。</p>
+</li>
+<li><p>第二个字段：是文件或者目录在容器中挂载的路径。</p>
+</li>
+<li><p>第三个字段：这个字段是可选的，是用逗号（,）分隔的选项列表，例如 <code>ro</code>。</p>
+</li>
+</ul>
+<p><strong>–mount</strong>：由多个键值对组成，以逗号（,）分隔。</p>
+<ul>
+<li><p>type 键：值可以是 <code>bind</code>、<code>volume</code>或<code>tmpfs</code>，不填写此字段默认为 <code>volume</code>。</p>
+</li>
+<li><p>source 或 src 键：对于命名卷，值为卷的名称；对于匿名卷，此键值对省略。</p>
+</li>
+<li><p>destination、dst 或 target 键：值为容器中挂载的路径。</p>
+</li>
+<li><p>readonly 键：该键如果存在，表示以只读方式挂载至容器内。</p>
+</li>
+<li><p>volume-opt 键：该键可以多次指定，它采用由选项名称及其值组成的键值对做为值。</p>
+</li>
+</ul>
+<p>并且如果需要指定卷驱动程序选项，则必须使用 <code>--mount</code> 选项。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们使用了两种方式来持久化容器内的数据：</p>
+<ol>
+<li><p>通过创建 Docker 数据卷来持久化数据，Docker 数据卷操作的所有命令如下：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker volume --<span class="hljs-built_in">help</span><br><br>Usage:  docker volume COMMAND<br><br>Manage volumes<br><br>Commands:<br>  create      Create a volume<br>  inspect     Display detailed information on one or more volumes<br>  ls          List volumes<br>  prune       Remove all unused <span class="hljs-built_in">local</span> volumes<br>  rm          Remove one or more volumes<br><br>Run <span class="hljs-string">'docker volume COMMAND --help'</span> <span class="hljs-keyword">for</span> more information on a <span class="hljs-built_in">command</span>.<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>通过挂载主机目录来持久化容器内的数据。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a href="https://docs.docker.com/storage/volumes/" target="_blank" rel="noopener">Docker Use volumes</a></p>
+</li>
+<li><p><a href="https://docs.docker.com/storage/bind-mounts/" target="_blank" rel="noopener">Docker Use bind mounts</a></p>
+</li>
+</ul>
+
+      
+    </main>
+    <footer class="post-footer">
+      
+    </footer>
+  </article>
+  
+  <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
+    <div class="post-block">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Prometheus/recommend/">
+      <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <meta itemprop="name" content="Chris">
+        <meta itemprop="description" content>
+        <meta itemprop="image" content="/images/avatar.png">
+      </span>
+      <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+        <meta itemprop="name" content="文成武略">
+      </span>
+    </div>
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">
+        <a class="post-title-link post-title-link-external" href="/2019/03/22/Prometheus/recommend/" itemprop="url">Prometheus 介绍</a>
+      </h1>
+      <div class="post-meta">
+        
+        <span class="post-date">
+          <i class="far fa-calendar-plus"></i><span><time title="post-date" itemprop="dateCreated datePublished" datetime="2019-03-22T08:10:11+08:00">2019-03-22 08:10:11</time></span>
+        </span>
+        
+        
+        
+        <span class="post-meta-divider divider">|</span>
+        
+        <span class="post-categories">
+          
+          <i class="far fa-folder-open"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/" itemprop="url" rel="index"><span itemprop="name">运维</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/监控/" itemprop="url" rel="index"><span itemprop="name">监控</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/监控/Prometheus/" itemprop="url" rel="index"><span itemprop="name">Prometheus</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/监控/Prometheus/概要/" itemprop="url" rel="index"><span itemprop="name">概要</span></a></span>
+        </span>
+        
+        
+      </div>
+    </header>
+    <main class="post-main" itemprop="articleBody">
+      
+      <h3 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h3><p>Prometheus（简称 Prom） 是新一代的监控系统，配置简单却灵活，对容器、微服务等支持良好。本次实验我们先来了解一下 Prometheus 的基础概念。</p>
+<hr>
+<h3 id="知识点"><a href="#知识点" class="headerlink" title="知识点"></a>知识点</h3><ol>
+<li>Prometheus总览</li>
+<li>Prometheus核心概念
+      
+    </li></ol></main>
+    <footer class="post-footer">
+      
+    </footer>
+  </article>
+  
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fas fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+  
+  
+</div>
+
+          </div>
+          
+          
+          
+<aside class="sidebar" id="sidebar" style="background: url(/images/background.png);">
+  
+  <div class="search">
+    <div class="form-group">
+      <i class="fas fa-search"></i><input type="search" id="search-input" name="q" results="0" placeholder="搜索" class="form-control">
+    </div>
+  </div>
+  <div class="search-result-box" id="search-result"></div>
+  
+  
+<div class="info sidebar-item" id="info">
+  
+  <img class="author-avatar" src="/images/avatar.png" alt="Chris">
+  
+  <h1 class="author-name">Chris</h1>
+  <h2 class="author-description"></h2>
+  <div class="site-count">
+    
+    
+    
+    
+    <div class="archives-count count-block">
+      <div class="site-count-title">归档</div>
+      <div><a href="/archives/">12</a></div>
+    </div>
+    
+    
+    
+    <div class="categories-count count-block">
+      <div class="site-count-title">分类</div>
+      <div><a href="/categories/">8</a></div>
+    </div>
+    
+    
+    
+    <div class="tags-count count-block">
+      <div class="site-count-title">标签</div>
+      <div><a href="/tags/">0</a></div>
+    </div>
+    
+    
+    
+    
+  </div>
+  
+  <div class="rss">
+    <a class="rss-link button sidebar-item" href="/atom.xml"><i class="fas fa-rss"></i>RSS</a>
+  </div>
+  
+</div>
+
+
+  <div class="sidebar-sticky">
+    
+    
+    <hr>
+    <div class="social-link sidebar-item">
+      <div><i class="far fa-address-card"></i>社交链接<p></p></div>
+      <ul>
+        
+        <li><i class="fas fa-envelope"></i><a href="mailto:youremail@youremailhost" target="_blank">E-Mail</a></li>
+        
+        <li><i class="fab fa-github"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fab fa-weibo"></i><a href="https://weibo.com/" target="_blank">Weibo</a></li>
+        
+      </ul>
+    </div>
+    
+    
+    <hr>
+    <div class="blogroll sidebar-item">
+      <div><i class="fas fa-link"></i>友情链接</div>
+      <ul>
+        
+        <li><i class="fas fa-link"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://developer.mozilla.org/" target="_blank">MDN</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://mozilla.github.io/nunjucks/" target="_blank">Nunjucks</a></li>
+        
+      </ul>
+    </div>
+    
+  </div>
+</aside>
+
+
+          
+        </div>
+      </div>
+    </main>
+    
+<footer id="footer" class="footer" style="background: #33363b;">
+  <div class="container">
+    <div class="back-to-top">
+      <button id="back-to-top"><i class="fas fa-angle-double-up" aria-label="回到顶部"></i></button>
+    </div>
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="copyright">
+          <span class="author">Chris</span><span class="year"><i class="far fa-copyright"></i>2019</span>
+        </div>
+        
+        <div class="busuanzi">
+          <span id="busuanzi_container_site_pv"><i class="fas fa-eye" aria-label="站点点击量" aria-hidden="false"></i><span id="busuanzi_value_site_pv"></span></span><span id="busuanzi_container_site_uv"><i class="fas fa-user" aria-label="站点用户数" aria-hidden="false"></i><span id="busuanzi_value_site_uv"></span></span><span id="busuanzi_container_page_pv"><i class="far fa-file-alt"></i><span id="busuanzi_value_page_pv" aria-label="页面点击量" aria-hidden="false"></span></span>
+        </div>
+        
+      </div>
+      <div class="footer-right">
+        <div class="custom-info">
+          
+          托管于<i class="fab fa-github-alt"></i><a href="https://pages.github.com/" target="_blank">GitHub Pages</a>
+          
+        </div>
+        <div class="powered-by">
+          由 <a href="https://hexo.io/" target="_blank">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/AlynxZhou/hexo-theme-aria/" target="_blank">ARIA</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  </body>
+</html>

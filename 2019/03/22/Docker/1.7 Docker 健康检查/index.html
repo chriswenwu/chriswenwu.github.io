@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#33363b">
+    <meta name="msapplication-TileColor" content="#33363b">
+    
+    
+    
+    
+    <meta name="keywords" content="Life, ARIA, Hexo">
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    
+    
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#33363b">
+    
+    
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    
+    
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    
+    
+    <link rel="alternate" href="/atom.xml" title="文成武略" type="application/atom+xml">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicons/favicon.ico">
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    
+    <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
+    
+    
+<link rel="stylesheet" type="text/css" href="/css/page.css">
+<link rel="stylesheet" type="text/css" href="/css/post.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="/css/atom-one-dark.css">
+    <link rel="stylesheet" type="text/css" href="/css/lightgallery.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script defer type="text/javascript" src="/js/util.js"></script>
+    <script defer type="text/javascript" src="/js/clipboard.min.js"></script>
+    <script defer type="text/javascript" src="/js/scrollspy.js"></script>
+    <script defer type="text/javascript" src="/js/fontawesome-all.min.js"></script>
+    <script defer type="text/javascript" src="/js/lightgallery.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-hash.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-pager.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-thumbnail.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-zoom.min.js"></script>
+    
+    <script defer src="/js/busuanzi.pure.mini.js"></script>
+    
+    
+    <script defer type="text/javascript" src="/js/search.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var searchPath = "search.xml";
+      if (searchPath.length === 0) {
+        searchPath = "search.xml";
+      }
+      var path = "/" + searchPath;
+      searchFunc(path, "search-input", "search-result");
+    });
+    </script>
+    
+    
+    <script defer type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var cb = null;
+      var els = $(".post figure.highlight");
+      if (els.length) {
+        // Enabled Hexo highlight line number.
+        $(els).each(function (i, e) {
+          $(e).before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout with line number.
+              return trigger.nextElementSibling.firstChild.firstChild.firstChild.lastChild.firstChild.firstChild;
+          }
+        });
+      } else {
+        // Disabled Hexo highlight line number.
+        els = $(".post pre code");
+        $(els).each(function (i, e) {
+          // Add button before pre, not code.
+          $(e).parent().before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout without line number.
+              return trigger.nextElementSibling.firstChild;
+          }
+        });
+      }
+      cb.on("success", function (e) {
+        e.clearSelection();
+        var trigger = e.trigger;
+        // Change button text as a user tip.
+        trigger.innerHTML = "已复制";
+        $(trigger).addClass("copied");
+        // Change button text back;
+        setTimeout(function () {
+          trigger.innerHTML = "复制";
+          $(trigger).removeClass("copied");
+        }, 1500);
+      });
+    });
+    </script>
+    
+    <script defer type="text/javascript" src="/js/custom.js"></script>
+    <title>健康检查 | 文成武略</title>
+  </head>
+  <body itemscope itemtype="http://schema.org/WebPage" lang="zh_CN" data-spy="scroll" data-target=".list-group">
+    
+<header id="header" class="header" style="background: #33363b;">
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <h1 class="title"><a href="/">文成武略</a></h1>
+        <h2 class="subtitle"></h2>
+      </div>
+      
+      <div class="logo">
+        <img src="/images/logo.png" alt="logo">
+      </div>
+      
+    </div>
+    <nav id="nav" class="nav">
+      <a id="nav-toggle" class="nav-toggle" aria-hidden="true"><i class="fas fa-bars" aria-label="切换导航栏"></i></a>
+      <ul id="menu" role="menubar" aria-hidden="false">
+        
+        <li role="menuitem"><a href="/"><i class="fas fa-home"></i><span class="menu-text">首页</span></a></li>
+        
+        <li role="menuitem"><a href="/archives/"><i class="fas fa-archive"></i><span class="menu-text">归档</span></a></li>
+        
+        <li role="menuitem"><a href="/categories/"><i class="fas fa-th-list"></i><span class="menu-text">分类</span></a></li>
+        
+        <li role="menuitem"><a href="/tags/"><i class="fas fa-tags"></i><span class="menu-text">标签</span></a></li>
+        
+        <li role="menuitem"><a href="/about/"><i class="fas fa-user-edit"></i><span class="menu-text">关于</span></a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <main id="main" class="main">
+      <div class="container">
+        <div class="main-container">
+          <div class="content">
+            
+<div id="post" class="page">
+  
+  <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
+    <div class="post-block">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.7 Docker 健康检查/">
+      <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+       <meta itemprop="name" content="Chris">
+       <meta itemprop="description" content>
+       <meta itemprop="image" content="/images/avatar.png">
+      </span>
+      <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+       <meta itemprop="name" content="文成武略">
+      </span>
+    </div>
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">健康检查</h1>
+      <div class="post-meta">
+        
+        <span class="post-date">
+          <i class="far fa-calendar-plus"></i><span><time title="post-date" itemprop="dateCreated datePublished" datetime="2019-03-22T09:10:11+08:00">2019-03-22 09:10:11</time></span>
+        </span>
+        
+        
+        
+        <span class="post-meta-divider divider">|</span>
+        
+        <span class="post-categories">
+          
+          <i class="far fa-folder-open"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/" itemprop="url" rel="index"><span itemprop="name">运维</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/" itemprop="url" rel="index"><span itemprop="name">容器</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/Dokcer/" itemprop="url" rel="index"><span itemprop="name">Dokcer</span></a></span>
+        </span>
+        
+        
+      </div>
+    </header>
+    <main class="post-main" itemprop="articleBody">
+      <h1 id="Docker-健康检查"><a href="#Docker-健康检查" class="headerlink" title="Docker 健康检查"></a>Docker 健康检查</h1><p>我们运行容器时，查看容器状态时，只显示容器是否正在运行。</p>
+<p>如果出现这种情况：容器内的进程仍在运行，但是陷入了死循环出现假死状态，不能响应新的请求。Docker 是没有办法去判断这个容器内的服务是不可用的。</p>
+<p>我们来模拟这种情况：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d -p 80:80 --name nginx nginx:1.14.2<br>9a340f69249f387475bd22c08dbb96f4cae7712dab59f9af007a78589a2b0d01<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   3 minutes ago       Up 3 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br>HTTP/1.1 200 OK<br>Server: nginx/1.14.2<br>Date: Thu, 21 Feb 2019 18:16:21 GMT<br>Content-Type: text/html<br>Content-Length: 612<br>Last-Modified: Tue, 04 Dec 2018 14:44:49 GMT<br>Connection: keep-alive<br>ETag: <span class="hljs-string">"5c0692e1-264"</span><br>Accept-Ranges: bytes<br></code></pre></td></tr></table></figure>
+<p>我们只能看到状态是 <code>UP</code> 状态，并且 Nginx 主页可以访问。</p>
+<p>我们暂停进程：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     28760 28741  0 02:09 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      28798 28760  0 02:09 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 28760 28798<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES<br>9a340f69249f        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   9 minutes ago       Up 9 minutes        0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ curl -I http://127.0.0.1<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>注：如果想恢复暂停的容器，发送 SIGCONT 信号： <code>kill -s SIGCONT &lt;进程 ID&gt;</code></p>
+</blockquote>
+<p>此时我们看到的状态依然是 <code>UP</code> 状态，看不出任何问题，但是 Nginx 主页已经无法访问。</p>
+<p>所以我们需要利用健康检查机制来检测服务的可用性，防止类似于以上进程还在但服务无法访问的情况。</p>
+<h2 id="容器添加健康检查"><a href="#容器添加健康检查" class="headerlink" title="容器添加健康检查"></a>容器添加健康检查</h2><p>Docker 提供了原生的健康检查实现，对应的参数为：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">--health-cmd  <span class="hljs-comment"># 执行一个健康检查命令</span><br>--health-interval  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查的执行的间隔时间（单位：ms、s 、m、h）</span><br>--health-retries  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令失败重试的次数</span><br>--health-timeout  <span class="hljs-comment"># 配合 --health-cmd 参数，设置健康检查命令超时时间（单位：ms、s 、m、h）</span><br></code></pre></td></tr></table></figure>
+<p>由于 Nginx 官方容器内没有 <code>curl</code> 命令，所以我们还需要制作一个带 <code>curl</code> 命令的 Nginx 容器。</p>
+<p>Dockerfile 如下：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">FROM nginx:1.14.2<br><br>RUN apt-get update -y &amp;&amp; apt-get install -y curl<br></code></pre></td></tr></table></figure>
+<p>在 Dockerfile 同级目录下构建镜像：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ tree<br>.<br>└── Dockerfile<br><br>0 directories, 1 file<br><br>$ docker image build -t nginx:1.14.2 .<br>...<br></code></pre></td></tr></table></figure>
+<p>现在我们来执行一个带有健康检查机制的容器：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    -p 80:80 \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-retries 5 \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>09118d61118af403dae9b33cf1efbaac36bd3162052eba3aa4c4b344efb61e1b<br></code></pre></td></tr></table></figure>
+<p>此时我们在来看容器的运行状态：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS                        PORTS                NAMES<br>09118d61118a        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   About a minute ago   Up About a minute (healthy)   0.0.0.0:80-&gt;80/tcp   nginx<br></code></pre></td></tr></table></figure>
+<p>会发现查看容器的状态多了一种状态：<code>healthy</code>，说明这个容器是健康的。</p>
+<p>我们使用 <code>docker container inspect</code> 命令来获取健康检查的记录：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T02:37:59.86587781+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T02:38:00.02983152+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"&lt;!DOCTYPE html&gt;\n&lt;html&gt;\n&lt;head&gt;\n&lt;title&gt;Welcome to nginx!&lt;/title&gt;\n&lt;style&gt;\n    body &#123;\n        width: 35em;\n        margin: 0 auto;\n        font-family: Tahoma, Verdana, Arial, sans-serif;\n    &#125;\n&lt;/style&gt;\n&lt;/head&gt;\n&lt;body&gt;\n&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;\n&lt;p&gt;If you see this page, the nginx web server is successfully installed and\nworking. Further configuration is required.&lt;/p&gt;\n\n&lt;p&gt;For online documentation and support please refer to\n&lt;a href=\"http://nginx.org/\"&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;\nCommercial support is available at\n&lt;a href=\"http://nginx.com/\"&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;\n\n&lt;p&gt;&lt;em&gt;Thank you for using nginx.&lt;/em&gt;&lt;/p&gt;\n&lt;/body&gt;\n&lt;/html&gt;\n"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们再来暂停进程：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ ps -ef | grep -v grep | grep nginx<br>root     10198 10179  0 03:01 ?        00:00:00 nginx: master process nginx -g daemon off;<br>101      10233 10198  0 03:01 ?        00:00:00 nginx: worker process<br><br>$ <span class="hljs-built_in">kill</span> -s SIGSTOP 10198 10233<br><br>$ docker container ls<br>CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS                     PORTS                NAMES<br>30f2c0ae85df        nginx:1.14.2        <span class="hljs-string">"nginx -g 'daemon of…"</span>   8 minutes ago       Up 8 minutes (unhealthy)   0.0.0.0:80-&gt;80/tcp   nginx<br><br>$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"unhealthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 6,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:10:15.499220798+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:10:17.499541229+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: -1,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"Health check exceeded timeout (2s)"</span><br>    &#125;<br>    ...<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这样，我们就可以准确的知道容器内的服务是否可用。在进行监控或者自动化时就可以根据容器的健康检查状态返回的退出码（ExitCode）来进行判断了。</p>
+<p>我们指定的健康检查命令为 <code>curl --silent --fail --connect-timeout 3 http://localhost || exit 1</code>，这条命令表示如果执行成功，则返回的值为 0，如果执行失败，则返回值为 1。</p>
+<p><strong>指定健康检查的命令的返回值决定了容器的状态</strong>，可能的值为：</p>
+<ul>
+<li><p>0：healthy - 容器健康，可以使用；</p>
+</li>
+<li><p>1：unhealthy - 容器不健康，需要诊断；</p>
+</li>
+<li><p>2：reserved - 保留，不要使用这个返回值。</p>
+</li>
+</ul>
+<h2 id="添加健康检查专用返回文本"><a href="#添加健康检查专用返回文本" class="headerlink" title="添加健康检查专用返回文本"></a>添加健康检查专用返回文本</h2><p>直接访问主页来执行健康检查有些不合适，我们还可以添加一个健康检查的配置：</p>
+<p>在 Nginx 配置文件中添加一条健康检查的匹配规则：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ cat /data/nginx/conf.d/default.conf | awk <span class="hljs-string">'! /^$/ &amp;&amp; ! /^[ ]?.*#/ &#123; print &#125;'</span><br>server &#123;<br>    listen       80;<br>    server_name  localhost;<br>    location / &#123;<br>        root   /usr/share/nginx/html;<br>        index  index.html index.htm;<br>    &#125;<br>    location /health &#123;<br>        add_header Content-Type <span class="hljs-string">"text/plain;charset=utf-8"</span>;<br>        <span class="hljs-built_in">return</span> 200 <span class="hljs-string">"ok"</span>;<br>    &#125;<br>    error_page   500 502 503 504  /50x.html;<br>    location = /50x.html &#123;<br>        root   /usr/share/nginx/html;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>然后运行挂载配置目录来运行 Nginx 容器：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker run -d \<br>    --name nginx \<br>    -p 80:80 \<br>    --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/data/nginx/conf.d/,dst=/etc/nginx/conf.d \<br>    --health-cmd <span class="hljs-string">"curl --silent --fail --connect-timeout 3 http://localhost/health || exit 1"</span> \<br>    --health-interval 5s \<br>    --health-timeout 2s \<br>    nginx:1.14.2<br>57f9378df04830a9e7081aff8efc13109b200799b11d2cd2d924a8ae276e8fc5<br></code></pre></td></tr></table></figure>
+<p>此时我们在获取健康检查记录就精简多了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container inspect --format=<span class="hljs-string">'&#123;&#123;json .State.Health&#125;&#125;'</span> nginx | jq<br>&#123;<br>  <span class="hljs-string">"Status"</span>: <span class="hljs-string">"healthy"</span>,<br>  <span class="hljs-string">"FailingStreak"</span>: 0,<br>  <span class="hljs-string">"Log"</span>: [<br>    &#123;<br>      <span class="hljs-string">"Start"</span>: <span class="hljs-string">"2019-02-22T03:01:52.41008393+08:00"</span>,<br>      <span class="hljs-string">"End"</span>: <span class="hljs-string">"2019-02-22T03:01:52.561938938+08:00"</span>,<br>      <span class="hljs-string">"ExitCode"</span>: 0,<br>      <span class="hljs-string">"Output"</span>: <span class="hljs-string">"ok"</span><br>    &#125;<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>类似的，在 Java 程序中，也可以添加一个专用的接口提供给健康检查机制使用：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">@RestController<br>@RequestMapping(path = <span class="hljs-string">"/"</span>)<br>public class Healthz &#123;<br>    @GetMapping(path = <span class="hljs-string">"/health"</span>,produces = MediaType.TEXT_PLAIN_VALUE)<br>    public String <span class="hljs-function"><span class="hljs-title">healthz</span></span>()&#123;<br>        <span class="hljs-built_in">return</span> <span class="hljs-string">"ok"</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>只是看容器是否正在运行时没办法保证服务是可用的，我们需要使用健康检查来确保服务是可用的。</p>
+</li>
+<li><p>我们最好准备一个专用的返回文本或页面来提供给健康检查机制使用。</p>
+</li>
+<li><p>我们可以根据健康检查的返回状态码来更准确的监控容器是否可用，Kubernetes 也会根据健康检查返回的状态来判断容器是否可用执行对应的自动化操作。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://docs.docker.com/engine/reference/run/#healthcheck" target="_blank" rel="noopener">Docker HEALTHCHECK</a></p>
+
+    </main>
+    <footer class="post-footer">
+      
+    </footer>
+  </article>
+  
+  
+  <nav class="page-nav">
+    <div class="page-nav-next page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.8 Docker 理解镜像的构成/" rel="next" title="理解镜像的构成"><i class="fas fa-angle-left"></i><span class="nav-title">理解镜像的构成</span></a>
+      
+    </div>
+    <div class="page-nav-prev page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.6 Docker 内核能力配置/" rel="prev" title="Docker 数据卷的使用与挂载主机目录"><span class="nav-title">Docker 数据卷的使用与挂载主机目录</span><i class="fas fa-angle-right"></i></a>
+      
+    </div>
+  </nav>
+  
+  
+</div>
+
+          </div>
+          
+          
+          
+<aside class="sidebar" id="sidebar" style="background: url(/images/background.png);">
+  
+  <div class="search">
+    <div class="form-group">
+      <i class="fas fa-search"></i><input type="search" id="search-input" name="q" results="0" placeholder="搜索" class="form-control">
+    </div>
+  </div>
+  <div class="search-result-box" id="search-result"></div>
+  
+  
+<div class="info sidebar-item" id="info">
+  
+  <img class="author-avatar" src="/images/avatar.png" alt="Chris">
+  
+  <h1 class="author-name">Chris</h1>
+  <h2 class="author-description"></h2>
+  <div class="site-count">
+    
+    
+    
+    
+    <div class="archives-count count-block">
+      <div class="site-count-title">归档</div>
+      <div><a href="/archives/">12</a></div>
+    </div>
+    
+    
+    
+    <div class="categories-count count-block">
+      <div class="site-count-title">分类</div>
+      <div><a href="/categories/">8</a></div>
+    </div>
+    
+    
+    
+    <div class="tags-count count-block">
+      <div class="site-count-title">标签</div>
+      <div><a href="/tags/">0</a></div>
+    </div>
+    
+    
+    
+    
+  </div>
+  
+  <div class="rss">
+    <a class="rss-link button sidebar-item" href="/atom.xml"><i class="fas fa-rss"></i>RSS</a>
+  </div>
+  
+</div>
+
+
+  <div class="sidebar-sticky">
+    
+    
+    
+    
+    
+    <hr>
+    <div class="post-toc sidebar-item" id="toc-div">
+      <div><i class="fas fa-list-ol"></i>文章目录</div>
+      <div class="post-toc-content"><ol class="list-group toc"><li class="toc-item toc-level-1"><a class="list-group-item toc-link" href="#Docker-健康检查"><span class="toc-text">Docker 健康检查</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#容器添加健康检查"><span class="toc-text">容器添加健康检查</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#添加健康检查专用返回文本"><span class="toc-text">添加健康检查专用返回文本</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol></li></ol></div>
+    </div>
+    
+    
+    
+    <hr>
+    <div class="social-link sidebar-item">
+      <div><i class="far fa-address-card"></i>社交链接<p></p></div>
+      <ul>
+        
+        <li><i class="fas fa-envelope"></i><a href="mailto:youremail@youremailhost" target="_blank">E-Mail</a></li>
+        
+        <li><i class="fab fa-github"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fab fa-weibo"></i><a href="https://weibo.com/" target="_blank">Weibo</a></li>
+        
+      </ul>
+    </div>
+    
+    
+    <hr>
+    <div class="blogroll sidebar-item">
+      <div><i class="fas fa-link"></i>友情链接</div>
+      <ul>
+        
+        <li><i class="fas fa-link"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://developer.mozilla.org/" target="_blank">MDN</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://mozilla.github.io/nunjucks/" target="_blank">Nunjucks</a></li>
+        
+      </ul>
+    </div>
+    
+  </div>
+</aside>
+
+
+          
+        </div>
+      </div>
+    </main>
+    
+<footer id="footer" class="footer" style="background: #33363b;">
+  <div class="container">
+    <div class="back-to-top">
+      <button id="back-to-top"><i class="fas fa-angle-double-up" aria-label="回到顶部"></i></button>
+    </div>
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="copyright">
+          <span class="author">Chris</span><span class="year"><i class="far fa-copyright"></i>2019</span>
+        </div>
+        
+        <div class="busuanzi">
+          <span id="busuanzi_container_site_pv"><i class="fas fa-eye" aria-label="站点点击量" aria-hidden="false"></i><span id="busuanzi_value_site_pv"></span></span><span id="busuanzi_container_site_uv"><i class="fas fa-user" aria-label="站点用户数" aria-hidden="false"></i><span id="busuanzi_value_site_uv"></span></span><span id="busuanzi_container_page_pv"><i class="far fa-file-alt"></i><span id="busuanzi_value_page_pv" aria-label="页面点击量" aria-hidden="false"></span></span>
+        </div>
+        
+      </div>
+      <div class="footer-right">
+        <div class="custom-info">
+          
+          托管于<i class="fab fa-github-alt"></i><a href="https://pages.github.com/" target="_blank">GitHub Pages</a>
+          
+        </div>
+        <div class="powered-by">
+          由 <a href="https://hexo.io/" target="_blank">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/AlynxZhou/hexo-theme-aria/" target="_blank">ARIA</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  </body>
+</html>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#33363b">
+    <meta name="msapplication-TileColor" content="#33363b">
+    
+    
+    
+    
+    <meta name="keywords" content="Life, ARIA, Hexo">
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    
+    
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#33363b">
+    
+    
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    
+    
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    
+    
+    <link rel="alternate" href="/atom.xml" title="文成武略" type="application/atom+xml">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicons/favicon.ico">
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    
+    <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
+    
+    
+<link rel="stylesheet" type="text/css" href="/css/page.css">
+<link rel="stylesheet" type="text/css" href="/css/post.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="/css/atom-one-dark.css">
+    <link rel="stylesheet" type="text/css" href="/css/lightgallery.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script defer type="text/javascript" src="/js/util.js"></script>
+    <script defer type="text/javascript" src="/js/clipboard.min.js"></script>
+    <script defer type="text/javascript" src="/js/scrollspy.js"></script>
+    <script defer type="text/javascript" src="/js/fontawesome-all.min.js"></script>
+    <script defer type="text/javascript" src="/js/lightgallery.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-hash.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-pager.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-thumbnail.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-zoom.min.js"></script>
+    
+    <script defer src="/js/busuanzi.pure.mini.js"></script>
+    
+    
+    <script defer type="text/javascript" src="/js/search.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var searchPath = "search.xml";
+      if (searchPath.length === 0) {
+        searchPath = "search.xml";
+      }
+      var path = "/" + searchPath;
+      searchFunc(path, "search-input", "search-result");
+    });
+    </script>
+    
+    
+    <script defer type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var cb = null;
+      var els = $(".post figure.highlight");
+      if (els.length) {
+        // Enabled Hexo highlight line number.
+        $(els).each(function (i, e) {
+          $(e).before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout with line number.
+              return trigger.nextElementSibling.firstChild.firstChild.firstChild.lastChild.firstChild.firstChild;
+          }
+        });
+      } else {
+        // Disabled Hexo highlight line number.
+        els = $(".post pre code");
+        $(els).each(function (i, e) {
+          // Add button before pre, not code.
+          $(e).parent().before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout without line number.
+              return trigger.nextElementSibling.firstChild;
+          }
+        });
+      }
+      cb.on("success", function (e) {
+        e.clearSelection();
+        var trigger = e.trigger;
+        // Change button text as a user tip.
+        trigger.innerHTML = "已复制";
+        $(trigger).addClass("copied");
+        // Change button text back;
+        setTimeout(function () {
+          trigger.innerHTML = "复制";
+          $(trigger).removeClass("copied");
+        }, 1500);
+      });
+    });
+    </script>
+    
+    <script defer type="text/javascript" src="/js/custom.js"></script>
+    <title>理解镜像的构成 | 文成武略</title>
+  </head>
+  <body itemscope itemtype="http://schema.org/WebPage" lang="zh_CN" data-spy="scroll" data-target=".list-group">
+    
+<header id="header" class="header" style="background: #33363b;">
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <h1 class="title"><a href="/">文成武略</a></h1>
+        <h2 class="subtitle"></h2>
+      </div>
+      
+      <div class="logo">
+        <img src="/images/logo.png" alt="logo">
+      </div>
+      
+    </div>
+    <nav id="nav" class="nav">
+      <a id="nav-toggle" class="nav-toggle" aria-hidden="true"><i class="fas fa-bars" aria-label="切换导航栏"></i></a>
+      <ul id="menu" role="menubar" aria-hidden="false">
+        
+        <li role="menuitem"><a href="/"><i class="fas fa-home"></i><span class="menu-text">首页</span></a></li>
+        
+        <li role="menuitem"><a href="/archives/"><i class="fas fa-archive"></i><span class="menu-text">归档</span></a></li>
+        
+        <li role="menuitem"><a href="/categories/"><i class="fas fa-th-list"></i><span class="menu-text">分类</span></a></li>
+        
+        <li role="menuitem"><a href="/tags/"><i class="fas fa-tags"></i><span class="menu-text">标签</span></a></li>
+        
+        <li role="menuitem"><a href="/about/"><i class="fas fa-user-edit"></i><span class="menu-text">关于</span></a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <main id="main" class="main">
+      <div class="container">
+        <div class="main-container">
+          <div class="content">
+            
+<div id="post" class="page">
+  
+  <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
+    <div class="post-block">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.8 Docker 理解镜像的构成/">
+      <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+       <meta itemprop="name" content="Chris">
+       <meta itemprop="description" content>
+       <meta itemprop="image" content="/images/avatar.png">
+      </span>
+      <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+       <meta itemprop="name" content="文成武略">
+      </span>
+    </div>
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">理解镜像的构成</h1>
+      <div class="post-meta">
+        
+        <span class="post-date">
+          <i class="far fa-calendar-plus"></i><span><time title="post-date" itemprop="dateCreated datePublished" datetime="2019-03-22T09:10:11+08:00">2019-03-22 09:10:11</time></span>
+        </span>
+        
+        
+        
+        <span class="post-meta-divider divider">|</span>
+        
+        <span class="post-categories">
+          
+          <i class="far fa-folder-open"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/" itemprop="url" rel="index"><span itemprop="name">运维</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/" itemprop="url" rel="index"><span itemprop="name">容器</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/Dokcer/" itemprop="url" rel="index"><span itemprop="name">Dokcer</span></a></span>
+        </span>
+        
+        
+      </div>
+    </header>
+    <main class="post-main" itemprop="articleBody">
+      <h1 id="1-8-理解镜像的构成"><a href="#1-8-理解镜像的构成" class="headerlink" title="1.8 理解镜像的构成"></a>1.8 理解镜像的构成</h1><p>对于开发者或者 Docker 维护者而言，经常需要根据我们的需求来定制镜像。所以我们会经常和镜像打交道。</p>
+<p>之前我们使用过 <code>docker commit</code> 命令定制过属于自己的镜像。但是，不要使用 <code>docker commit</code> 定制镜像，定制镜像应该使用 <code>Dockerfile</code> 来完成。</p>
+<p>在介绍 <code>Dockerfile</code> 之前，我们先来理解镜像是怎么构成的，理解了镜像的构成后再使用 <code>Dockerfile</code> 构建镜像就容易多了。</p>
+<h2 id="Docker-镜像简介"><a href="#Docker-镜像简介" class="headerlink" title="Docker 镜像简介"></a>Docker 镜像简介</h2><p>Docker 镜像是一个只读的 Docker 容器模板，含有启动 Docker 容器所需的文件系统结构及其内容。</p>
+<p>Docker 镜像的文件内容以及一些运行 Docker 容器的配置文件组成了 Docker 容器的静态文件系统运行环境：<strong>rootfs</strong>。</p>
+<p>可以这么理解，Docker 镜像是 Docker 容器的静态视角，Docker 容器是 Docker 镜像的运行状态。</p>
+<p>首先你需要明确以下两点：</p>
+<ul>
+<li><p>容器看起来像一个完整的操作系统就是因为镜像为容器提供了独立的文件系统，即 rootfs。</p>
+</li>
+<li><p>镜像是分层的，然后在使用联合挂载技术将这些镜像层组成一个完整的 rootfs，最后再使用联合挂载技术挂载一层可读写层，就形成了容器内我们所看见的统一的文件系统视图。</p>
+</li>
+</ul>
+<h2 id="ROOTFS-文件系统"><a href="#ROOTFS-文件系统" class="headerlink" title="ROOTFS 文件系统"></a>ROOTFS 文件系统</h2><p>rootfs 是由镜像所提供的，是 Docker 容器在启动时内部进程可见的文件系统，即 Docker 容器的根目录。</p>
+<p>rootfs 通常包含一个操作系统运行所需的文件系统，例如可能包含典型的类 Unix 操作系统中的目录系统，如 /dev、/proc、/bin、/etc、/lib、/usr、/tmp 以及运行 Docker 容器所需的配置文件、工具等。</p>
+<p>rootfs 为只读模式。在挂载完毕之后，利用联合挂载（Union Mount）技术在已有的只读 rootfs 上再挂载一个读写层。这样，可读写层处于 Docker 容器文件系统的最顶层，其下可能联合挂载多个只读层，只有在 Docker 容器运行过程中文件系统发生变化时，才会把变化的文件内容写到可读写层，并<strong>隐藏</strong>只读层中的老版本文件。</p>
+<blockquote>
+<p><strong>注意</strong></p>
+<p>我们之前在「1.3 Docker 数据卷的使用与挂载主机目录」中提过，容器内最上层的可读写层是临时的。这个临时的可读写层随着容器的重启或删除也会清空，所以不要在容器的可读写层保存持久化数据。通过数据卷或者挂载主机目录来保存持久化数据。</p>
+</blockquote>
+<p>我们用一张图来描述容器使用 rootfs 文件系统：</p>
+<p><img src="./images/AUFS文件系统.png" alt="AUFS 文件系统"></p>
+<p>我们来进行验证：</p>
+<p>宿主机的进程（没有使用 Chroot 改变进程根目录）将会看到宿主机的文件系统，我们在宿主机运行一个 Java 程序：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ nohup java -jar demo-0.0.1.jar &gt; /dev/null 2&gt;&amp;1  &amp;<br>[2] 23108<br><br><span class="hljs-comment"># 查看 java 进程的根目录</span><br>$ ls /proc/23108/root/<br>bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var<br><br>$ du -sh --exclude=<span class="hljs-string">"/proc/23108/root/proc/*"</span> /proc/23108/root/<br>2.8G    /proc/23108/root/<br></code></pre></td></tr></table></figure>
+<p>容器内的进程只能看到由镜像联合挂载的 rootfs 文件系统，我们在容器内运行一个 java 程序：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d --name hello hello:0.1<br>1aa9628ae3d6cfa15aae907f7eeda4b77468725719d5b40e9aa5303a11181063<br><br>$ ps -ef | grep -v grep | grep java<br>root     28417 28399 31 00:09 ?        00:00:06 java -jar /demo-0.0.1.jar<br><br>$ ls /proc/28417/root/<br>bin  boot  demo-0.0.1.jar  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var<br><br>$ du -sh --exclude=<span class="hljs-string">"/proc/28417/root/proc/*"</span> /proc/28417/root/<br>291M    /proc/28417/root/<br></code></pre></td></tr></table></figure>
+<p>可以发现容器内的整个文件系统要比宿主机的文件系统小的多。</p>
+<p>我们用一幅图来比较运行在宿主机的进程与运行在容器内的进程：</p>
+<p><img src="./images/DockerAUFS文件系统.png" alt="Docker AUFS 文件系统"></p>
+<p>现在我们再来看官方的图应该就能理解宿主机的进程和容器内的进程的区别了，也应该能理解镜像到底是什么？就是给容器内的进程提供一个运行环境的：</p>
+<p><img src="./images/宿主机进程和容器进程的区别.png" alt="宿主机进程和容器进程的区别"></p>
+<p>这幅图右边的 Libraries 就是一个操作系统所需要的目录及文件，再把我们需要的程序放进去（比如说 Java 程序）。也就是我们刚才所说的 rootfs 文件系统，而这个 rootfs 操作系统就是由 Docker 镜像所提供的。</p>
+<h2 id="Docker-镜像的分层"><a href="#Docker-镜像的分层" class="headerlink" title="Docker 镜像的分层"></a>Docker 镜像的分层</h2><p>Docker 镜像是采用分层方式构建的，每个镜像由一系列的「镜像层」构成。</p>
+<p>Docker 镜像分层结构是 Docker 镜像轻量的主要原因。当需要修改容器镜像内的某个文件时，只对处于上方的读写层进行变动，不覆盖读写层下面已有的文件系统的内容，已有文件在只读层中的原始版本依然会存在，但会被隐藏。当你使用 <code>Docker commit</code> 或使用 <code>Dockerfile</code> 在原始镜像的基础上生成新的镜像时，保存的内容仅为最上层的读写层，相当于多了一个「镜像层」。</p>
+<p>分层的目的就是为了在不同的镜像之间共享镜像层达到节省磁盘空间的目的。</p>
+<p>我们用一张图来描述镜像的分层：</p>
+<p><img src="./images/Docker镜像分层.png" alt="Docker 镜像分层"></p>
+<p>我们来验证镜像的分层：</p>
+<p>查看系统中的镜像：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker image ls<br>REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE<br>wema/zuul           0.1                 7baa6ec0606d        2 days ago          338MB<br>wema/users          0.1                 0c6721ba85c8        2 days ago          337MB<br>wema/third-party    0.1                 4d112e570e6c        2 days ago          346MB<br>wema/teacher        0.1                 d96228e1ac53        2 days ago          336MB<br>wema/eureka         0.1                 4ff81306b255        2 days ago          324MB<br>wema/course         0.1                 ce2594635709        2 days ago          339MB<br>wema/company        0.1                 b01a31292858        2 days ago          336MB<br>tomcat              8                   168588387c68        13 days ago         463MB<br>mysql               5.7                 e47e309f72c8        2 weeks ago         372MB<br>java                8                   719e41f3e37b        3 months ago        280MB<br>redis               3                   87856cc39862        4 months ago        76MB<br></code></pre></td></tr></table></figure>
+<p>由于 wema/zuul:0.1、wema/eureka:0.1 等这些封装了 Java 程序的镜像都是使用 java:8 这个镜像进行制作的，所以它们是共享了一些镜像层的：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker image <span class="hljs-built_in">history</span> java:8<br>IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT<br>719e41f3e37b        3 months ago        |0 /bin/sh -c yum install -y tar gzip &amp;&amp;    …   162MB               <br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  ENV JAVA_HOME=/usr/java/d…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Aurelio Garcia…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  CMD ["/bin/bash"]            0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop) ADD file:455ccf156d2b27cef…   117MB               </span><br>&lt;missing&gt;           5 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Oracle Linux P…   0B </span><br><br><br>$ docker image <span class="hljs-built_in">history</span> wema/zuul:0.1<br>IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT<br>7baa6ec0606d        2 days ago          /bin/sh -c <span class="hljs-comment">#(nop)  ENTRYPOINT ["java" "-jar"…   0B                  </span><br>1c5f0c7d9c6a        2 days ago          /bin/sh -c <span class="hljs-comment">#(nop) ADD file:53656c57d8b3ddca1…   58.3MB              </span><br>719e41f3e37b        3 months ago        |0 /bin/sh -c yum install -y tar gzip &amp;&amp;    …   162MB               <br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  ENV JAVA_HOME=/usr/java/d…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Aurelio Garcia…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  CMD ["/bin/bash"]            0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop) ADD file:455ccf156d2b27cef…   117MB               </span><br>&lt;missing&gt;           5 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Oracle Linux P…   0B </span><br><br>$ docker image <span class="hljs-built_in">history</span> wema/eureka:0.1<br>IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT<br>4ff81306b255        2 days ago          /bin/sh -c <span class="hljs-comment">#(nop)  ENTRYPOINT ["java" "-jar"…   0B                  </span><br>792aed369025        2 days ago          /bin/sh -c <span class="hljs-comment">#(nop) ADD file:cb8542050897d1ff9…   44.1MB              </span><br>719e41f3e37b        3 months ago        |0 /bin/sh -c yum install -y tar gzip &amp;&amp;    …   162MB               <br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  ENV JAVA_HOME=/usr/java/d…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Aurelio Garcia…   0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  CMD ["/bin/bash"]            0B                  </span><br>&lt;missing&gt;           3 months ago        /bin/sh -c <span class="hljs-comment">#(nop) ADD file:455ccf156d2b27cef…   117MB               </span><br>&lt;missing&gt;           5 months ago        /bin/sh -c <span class="hljs-comment">#(nop)  MAINTAINER Oracle Linux P…   0B</span><br></code></pre></td></tr></table></figure>
+<p>可以看到  wema/zuul:0.1 和 wema/eureka:0.1 这两个镜像共享了 6 层镜像层。</p>
+<p>所以 Docker 镜像并没有占用很大的空间：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker system df<br>TYPE                TOTAL               ACTIVE              SIZE                RECLAIMABLE<br>Images              11                  10                  1.587GB             279.8MB (17%)<br>...<br></code></pre></td></tr></table></figure>
+<p>现在你也应该能理解为什么当你在一个容器的读写层进行改变并生成新的镜像时，为什么不会覆盖下面已有的只读层，而是添加一层镜像层。因为其他镜像可能需要需要共享。</p>
+<p>分层也能帮助我们更好的排查镜像制作中的错误。如果制作的镜像出了问题，我们只需要在出问题的前一层镜像的基础上重新制作即可。</p>
+<p>现在再来看 Union FS（联合文件系统）与 Union Mount（联合挂载）技术。也容易理解多了：<strong>联合挂载就是用于将多个镜像层的文件系统挂载到一个挂载点来实现一个统一文件系统视图，形成联合文件系统。是下层存储驱动（如 Aufs、Overlay2）实现分层合并的方式</strong>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><p>挂载在容器根目录上、用来为容器进程提供隔离后执行环境的文件系统，就是 Docker 镜像。这个文件系统更专业的名称为：rootfs（根文件系统）。</p>
+</li>
+<li><p>有了镜像提供 rootfs，Docker 只需要切换进程的根目录（Change Root，可以参考 Chroot 技术），然后再启动 Linux Namespace 隔离（包括进程隔离、挂载隔离、网络隔离、主机名隔离），设置指定的 Cgroup 限制参数。这样一个完成的容器就诞生了。</p>
+</li>
+<li><p>rootfs 只是一个操作系统所包含的文件、配置和目录，并不包括操作系统的内核（bootfs 包含了 BootLoader 和 Kernel ），在Linux操作系统中，这两部分是分开存放的，操作系统只有在开机启动时才会加载指定版本的内核。所以说，rootfs 只包括了操作系统的 「躯壳」，并没有包括操作系统的「灵魂」。</p>
+</li>
+<li><p>由于 rootfs 里打包的不只是应用，而是整个操作系统的文件和目录，也就意味着，应用以及它运行所需要的所有依赖，都被封装在了一起。所以容器才有了一个被反复宣传至今的重要特性：一致性。即无论在本地、云端，还是在一台任何地方的机器上，用户只需要解压打包好的容器镜像，那么这个应用运行所需要的完整的执行环境就被重现出来了。</p>
+</li>
+<li><p>Docker 镜像之所以轻量，是因为通常我们制作的镜像只满足容器内运行的程序所依赖的目录文件，并且内核是使用宿主机的内核。所以有很多官方镜像为了足够精简，下载的官方镜像通常少了很多常用的命令。如果需要的话就使用 <code>Dockerfile</code> 在官方的镜像的基础上再加工。</p>
+</li>
+<li><p>容器启动后，最上层的读写层只是临时的。如果不使用 <code>docker commit</code> 将容器进行提交为镜像，这个容器删除后，读写层随之被删除。</p>
+</li>
+<li><p>我们在来回顾一下第一章介绍的容器的实现，Docker 容器看起来像一个完整的操作系统主要是因为：rootfs 为容器提供了独立的根目录；Linux Pid Namespace（进程隔离）技术让容器内的进程拥有一个全新的进程空间；Linux Network Namespace（网络隔离）技术让容器拥有自己独立的网络栈、路由表、防火墙规则、Socket等；Linux hostname Namespace（主机名隔离）技术让容器拥有自己独立的主机名；Linux User Namespace（用户隔离）技术让容器拥有自己独立的用户；Linux Mount Namespace（挂载隔离）技术让容器拥有自己独立的挂载的设备，还有一些其他的技术这里就不进行介绍了。<strong>这些技术实际上修改了应用进程看待整个计算机的「视图」，即容器内进程的「视线」被操作系统做了限制，只能「看到」某些指定的内容。无论怎么「移花接木」，容器终究也只是进程而已</strong>。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a href="https://docs.docker.com/storage/storagedriver/" target="_blank" rel="noopener">Docker About storage drivers</a></p>
+</li>
+<li><p><a href="https://docs.docker.com/storage/storagedriver/overlayfs-driver/" target="_blank" rel="noopener">Docker Use the OverlayFS storage driver</a></p>
+</li>
+</ul>
+
+    </main>
+    <footer class="post-footer">
+      
+    </footer>
+  </article>
+  
+  
+  <nav class="page-nav">
+    <div class="page-nav-next page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.9 Docker 使用 Dockerfile 自制镜像/" rel="next" title="Docker 使用 Dockerfile 自制镜像"><i class="fas fa-angle-left"></i><span class="nav-title">Docker 使用 Dockerfile 自制镜像</span></a>
+      
+    </div>
+    <div class="page-nav-prev page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.7 Docker 健康检查/" rel="prev" title="健康检查"><span class="nav-title">健康检查</span><i class="fas fa-angle-right"></i></a>
+      
+    </div>
+  </nav>
+  
+  
+</div>
+
+          </div>
+          
+          
+          
+<aside class="sidebar" id="sidebar" style="background: url(/images/background.png);">
+  
+  <div class="search">
+    <div class="form-group">
+      <i class="fas fa-search"></i><input type="search" id="search-input" name="q" results="0" placeholder="搜索" class="form-control">
+    </div>
+  </div>
+  <div class="search-result-box" id="search-result"></div>
+  
+  
+<div class="info sidebar-item" id="info">
+  
+  <img class="author-avatar" src="/images/avatar.png" alt="Chris">
+  
+  <h1 class="author-name">Chris</h1>
+  <h2 class="author-description"></h2>
+  <div class="site-count">
+    
+    
+    
+    
+    <div class="archives-count count-block">
+      <div class="site-count-title">归档</div>
+      <div><a href="/archives/">12</a></div>
+    </div>
+    
+    
+    
+    <div class="categories-count count-block">
+      <div class="site-count-title">分类</div>
+      <div><a href="/categories/">8</a></div>
+    </div>
+    
+    
+    
+    <div class="tags-count count-block">
+      <div class="site-count-title">标签</div>
+      <div><a href="/tags/">0</a></div>
+    </div>
+    
+    
+    
+    
+  </div>
+  
+  <div class="rss">
+    <a class="rss-link button sidebar-item" href="/atom.xml"><i class="fas fa-rss"></i>RSS</a>
+  </div>
+  
+</div>
+
+
+  <div class="sidebar-sticky">
+    
+    
+    
+    
+    
+    <hr>
+    <div class="post-toc sidebar-item" id="toc-div">
+      <div><i class="fas fa-list-ol"></i>文章目录</div>
+      <div class="post-toc-content"><ol class="list-group toc"><li class="toc-item toc-level-1"><a class="list-group-item toc-link" href="#1-8-理解镜像的构成"><span class="toc-text">1.8 理解镜像的构成</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#Docker-镜像简介"><span class="toc-text">Docker 镜像简介</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#ROOTFS-文件系统"><span class="toc-text">ROOTFS 文件系统</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#Docker-镜像的分层"><span class="toc-text">Docker 镜像的分层</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol></li></ol></div>
+    </div>
+    
+    
+    
+    <hr>
+    <div class="social-link sidebar-item">
+      <div><i class="far fa-address-card"></i>社交链接<p></p></div>
+      <ul>
+        
+        <li><i class="fas fa-envelope"></i><a href="mailto:youremail@youremailhost" target="_blank">E-Mail</a></li>
+        
+        <li><i class="fab fa-github"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fab fa-weibo"></i><a href="https://weibo.com/" target="_blank">Weibo</a></li>
+        
+      </ul>
+    </div>
+    
+    
+    <hr>
+    <div class="blogroll sidebar-item">
+      <div><i class="fas fa-link"></i>友情链接</div>
+      <ul>
+        
+        <li><i class="fas fa-link"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://developer.mozilla.org/" target="_blank">MDN</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://mozilla.github.io/nunjucks/" target="_blank">Nunjucks</a></li>
+        
+      </ul>
+    </div>
+    
+  </div>
+</aside>
+
+
+          
+        </div>
+      </div>
+    </main>
+    
+<footer id="footer" class="footer" style="background: #33363b;">
+  <div class="container">
+    <div class="back-to-top">
+      <button id="back-to-top"><i class="fas fa-angle-double-up" aria-label="回到顶部"></i></button>
+    </div>
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="copyright">
+          <span class="author">Chris</span><span class="year"><i class="far fa-copyright"></i>2019</span>
+        </div>
+        
+        <div class="busuanzi">
+          <span id="busuanzi_container_site_pv"><i class="fas fa-eye" aria-label="站点点击量" aria-hidden="false"></i><span id="busuanzi_value_site_pv"></span></span><span id="busuanzi_container_site_uv"><i class="fas fa-user" aria-label="站点用户数" aria-hidden="false"></i><span id="busuanzi_value_site_uv"></span></span><span id="busuanzi_container_page_pv"><i class="far fa-file-alt"></i><span id="busuanzi_value_page_pv" aria-label="页面点击量" aria-hidden="false"></span></span>
+        </div>
+        
+      </div>
+      <div class="footer-right">
+        <div class="custom-info">
+          
+          托管于<i class="fab fa-github-alt"></i><a href="https://pages.github.com/" target="_blank">GitHub Pages</a>
+          
+        </div>
+        <div class="powered-by">
+          由 <a href="https://hexo.io/" target="_blank">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/AlynxZhou/hexo-theme-aria/" target="_blank">ARIA</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  </body>
+</html>

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#33363b">
+    <meta name="msapplication-TileColor" content="#33363b">
+    
+    
+    
+    
+    <meta name="keywords" content="Life, ARIA, Hexo">
+    
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/android-chrome-192x192.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png">
+    
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
+    
+    
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#33363b">
+    
+    
+    <link rel="manifest" href="/favicons/site.webmanifest">
+    
+    
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+    
+    
+    <link rel="alternate" href="/atom.xml" title="文成武略" type="application/atom+xml">
+    
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/favicons/favicon.ico">
+    
+    
+    <link rel="stylesheet" type="text/css" href="/css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    
+    <link rel="stylesheet" type="text/css" href="/css/sidebar.css">
+    
+    
+<link rel="stylesheet" type="text/css" href="/css/page.css">
+<link rel="stylesheet" type="text/css" href="/css/post.css">
+
+    <link rel="stylesheet" type="text/css" href="/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="/css/atom-one-dark.css">
+    <link rel="stylesheet" type="text/css" href="/css/lightgallery.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script defer type="text/javascript" src="/js/util.js"></script>
+    <script defer type="text/javascript" src="/js/clipboard.min.js"></script>
+    <script defer type="text/javascript" src="/js/scrollspy.js"></script>
+    <script defer type="text/javascript" src="/js/fontawesome-all.min.js"></script>
+    <script defer type="text/javascript" src="/js/lightgallery.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-fullscreen.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-hash.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-pager.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-thumbnail.min.js"></script>
+    <script defer type="text/javascript" src="/js/lg-zoom.min.js"></script>
+    
+    <script defer src="/js/busuanzi.pure.mini.js"></script>
+    
+    
+    <script defer type="text/javascript" src="/js/search.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var searchPath = "search.xml";
+      if (searchPath.length === 0) {
+        searchPath = "search.xml";
+      }
+      var path = "/" + searchPath;
+      searchFunc(path, "search-input", "search-result");
+    });
+    </script>
+    
+    
+    <script defer type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      var cb = null;
+      var els = $(".post figure.highlight");
+      if (els.length) {
+        // Enabled Hexo highlight line number.
+        $(els).each(function (i, e) {
+          $(e).before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout with line number.
+              return trigger.nextElementSibling.firstChild.firstChild.firstChild.lastChild.firstChild.firstChild;
+          }
+        });
+      } else {
+        // Disabled Hexo highlight line number.
+        els = $(".post pre code");
+        $(els).each(function (i, e) {
+          // Add button before pre, not code.
+          $(e).parent().before("<button class=\"copy button\">复制</button>");
+        });
+        cb = new ClipboardJS("button.copy", {
+          "target": function (trigger) {
+              // Get target element by DOM API.
+              // nextElementSibling is figure,highlight.
+              // And following is the sequence of Hexo's internal
+              // highlight layout without line number.
+              return trigger.nextElementSibling.firstChild;
+          }
+        });
+      }
+      cb.on("success", function (e) {
+        e.clearSelection();
+        var trigger = e.trigger;
+        // Change button text as a user tip.
+        trigger.innerHTML = "已复制";
+        $(trigger).addClass("copied");
+        // Change button text back;
+        setTimeout(function () {
+          trigger.innerHTML = "复制";
+          $(trigger).removeClass("copied");
+        }, 1500);
+      });
+    });
+    </script>
+    
+    <script defer type="text/javascript" src="/js/custom.js"></script>
+    <title>Docker 资源限制 | 文成武略</title>
+  </head>
+  <body itemscope itemtype="http://schema.org/WebPage" lang="zh_CN" data-spy="scroll" data-target=".list-group">
+    
+<header id="header" class="header" style="background: #33363b;">
+  <div class="container">
+    <div class="header-container">
+      <div class="header-title">
+        <h1 class="title"><a href="/">文成武略</a></h1>
+        <h2 class="subtitle"></h2>
+      </div>
+      
+      <div class="logo">
+        <img src="/images/logo.png" alt="logo">
+      </div>
+      
+    </div>
+    <nav id="nav" class="nav">
+      <a id="nav-toggle" class="nav-toggle" aria-hidden="true"><i class="fas fa-bars" aria-label="切换导航栏"></i></a>
+      <ul id="menu" role="menubar" aria-hidden="false">
+        
+        <li role="menuitem"><a href="/"><i class="fas fa-home"></i><span class="menu-text">首页</span></a></li>
+        
+        <li role="menuitem"><a href="/archives/"><i class="fas fa-archive"></i><span class="menu-text">归档</span></a></li>
+        
+        <li role="menuitem"><a href="/categories/"><i class="fas fa-th-list"></i><span class="menu-text">分类</span></a></li>
+        
+        <li role="menuitem"><a href="/tags/"><i class="fas fa-tags"></i><span class="menu-text">标签</span></a></li>
+        
+        <li role="menuitem"><a href="/about/"><i class="fas fa-user-edit"></i><span class="menu-text">关于</span></a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</header>
+
+
+    <main id="main" class="main">
+      <div class="container">
+        <div class="main-container">
+          <div class="content">
+            
+<div id="post" class="page">
+  
+  <article class="article post card animate" itemscope itemtype="http://schema.org/Article">
+    <div class="post-block">
+      <link itemprop="mainEntityOfPage" href="chriswenwu.github.io/2019/03/22/Docker/1.5 Docker 资源限制/">
+      <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+       <meta itemprop="name" content="Chris">
+       <meta itemprop="description" content>
+       <meta itemprop="image" content="/images/avatar.png">
+      </span>
+      <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+       <meta itemprop="name" content="文成武略">
+      </span>
+    </div>
+    <header class="post-header">
+      <h1 class="post-title" itemprop="name headline">Docker 资源限制</h1>
+      <div class="post-meta">
+        
+        <span class="post-date">
+          <i class="far fa-calendar-plus"></i><span><time title="post-date" itemprop="dateCreated datePublished" datetime="2019-03-22T09:10:11+08:00">2019-03-22 09:10:11</time></span>
+        </span>
+        
+        
+        
+        <span class="post-meta-divider divider">|</span>
+        
+        <span class="post-categories">
+          
+          <i class="far fa-folder-open"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/" itemprop="url" rel="index"><span itemprop="name">运维</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/" itemprop="url" rel="index"><span itemprop="name">容器</span></a></span><i class="fas fa-angle-right"></i><span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/运维/容器/Dokcer/" itemprop="url" rel="index"><span itemprop="name">Dokcer</span></a></span>
+        </span>
+        
+        
+      </div>
+    </header>
+    <main class="post-main" itemprop="articleBody">
+      <h1 id="1-5-Docker-资源限制"><a href="#1-5-Docker-资源限制" class="headerlink" title="1.5 Docker 资源限制"></a>1.5 Docker 资源限制</h1><p>使用 Docker 运行容器时，一台主机上可能运行多个容器，这些容器虽然相互隔离，但是底层却使用着相同的 CPU、内存和磁盘资源。如果不对容器使用的资源进行限制，那么容器之间会互相影响。可能导致各容器的资源分配不合理，甚至可能会因为某个容器占用资源过多导致主机资源耗尽，影响主机上所有的容器。</p>
+<p>Docker 作为容器的管理者，自然提供了控制容器资源的功能，包括 CPU、内存和磁盘 IO。</p>
+<p>我之前在介绍 Docker 时说过 Docker 是通过 Linux 内核的 CGroups 技术来做容器的资源限制。这里只介绍 Docker 如何来对容器进行资源限制，实现的细节可以参考第一章的链接，这里就不做介绍了。</p>
+<h2 id="Stress-工具介绍"><a href="#Stress-工具介绍" class="headerlink" title="Stress 工具介绍"></a>Stress 工具介绍</h2><p>在介绍容器资源限制时需要用到压测工具进行测试，所以我们先介绍一个压力测试软件：Stress。</p>
+<p>首先安装 Stress：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ yum install -y stress<br></code></pre></td></tr></table></figure>
+<p>来看一下 Stress 命令帮助：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">stress --<span class="hljs-built_in">help</span><br><span class="hljs-string">'stress'</span> imposes certain types of compute stress on your system<br><br>Usage: stress [OPTION [ARG]] ...<br> -?, --<span class="hljs-built_in">help</span>         show this <span class="hljs-built_in">help</span> statement <span class="hljs-comment"># 显示帮助信息</span><br>     --version      show version statement <span class="hljs-comment"># 显示版本号</span><br> -v, --verbose      be verbose <span class="hljs-comment"># 详细模式</span><br> -q, --quiet        be quiet <span class="hljs-comment"># 静默模式，不显示运行信息</span><br> -n, --dry-run      show what would have been <span class="hljs-keyword">done</span> <span class="hljs-comment"># 显示已经完成的指令执行情况</span><br> -t, --timeout N    timeout after N seconds <span class="hljs-comment"># 指定运行 N 秒后停止</span><br>     --backoff N    <span class="hljs-built_in">wait</span> factor of N microseconds before work starts <span class="hljs-comment"># 等待 N 微妙后开始运行</span><br> -c, --cpu N        spawn N workers spinning on sqrt() <span class="hljs-comment"># 产生 N 个进程 每个进程都反复不停的执行 sqrt() 计算随机数的平方根</span><br> -i, --io N         spawn N workers spinning on sync() <span class="hljs-comment"># 产生 N 个进程 每个进程反复调用 sync()，sync() 用于将内存上的内容写到硬盘上</span><br> -m, --vm N         spawn N workers spinning on malloc()/free() <span class="hljs-comment"># 产生 N 个进程,每个进程不断调用内存分配 malloc() 和内存释放 free() 函数</span><br>     --vm-bytes B   malloc B bytes per vm worker (default is 256MB) <span class="hljs-comment"># 指定 malloc() 时内存的字节数 (默认 256MB)</span><br>     --vm-stride B  touch a byte every B bytes (default is 4096)<br>     --vm-hang N    sleep N secs before free (default none, 0 is inf) <span class="hljs-comment"># 表示 malloc 分配的内存 N 秒后再使用 free() 释放掉</span><br>     --vm-keep      redirty memory instead of freeing and reallocating <span class="hljs-comment"># 不释放内存资源</span><br> -d, --hdd N        spawn N workers spinning on write()/unlink() <span class="hljs-comment"># 产生 N 个进程，每个进程执行 write() 和 unlink () 函数</span><br>     --hdd-bytes B  write B bytes per hdd worker (default is 1GB) <span class="hljs-comment"># 指定写的字节数，默认是 1GB</span><br><br>Example: stress --cpu 8 --io 4 --vm 2 --vm-bytes 128M --timeout 10s<br><br>Note: Numbers may be suffixed with s,m,h,d,y (time) or B,K,M,G (size).<br></code></pre></td></tr></table></figure>
+<p>来举一些例子：</p>
+<p>我使用的主机 CPU 核心数为 4 核，我们产生 2 个 CPU 进程：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ stress --verbose -c 2<br>stress: info: [18148] dispatching hogs: 2 cpu, 0 io, 0 vm, 0 hdd<br>stress: dbug: [18148] using backoff sleep of 6000us<br>stress: dbug: [18148] --&gt; hogcpu worker 2 [18149] forked<br>stress: dbug: [18148] using backoff sleep of 3000us<br>stress: dbug: [18148] --&gt; hogcpu worker 1 [18150] forked<br></code></pre></td></tr></table></figure>
+<p>我们在另一个终端上使用 <code>top</code> 命令查看结果：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ top<br>...<br>%Cpu(s): 50.0 us,  0.1 sy,  0.0 ni, 49.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st<br>...<br>  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                       <br>18149 root      20   0    7308    100      0 R 100.0  0.0   1:23.92 stress                                                                     <br>18150 root      20   0    7308    100      0 R 100.0  0.0   1:23.92 stress<br></code></pre></td></tr></table></figure>
+<p>发现，CPU 已经用了一半，每个 Stress 产生的进程都用了一个核心。</p>
+<p>我们再来产生 4 个 I/O 进程，I/O 进程会不断把内存中的内容复制到磁盘上，这将消耗内核态的 CPU 资源：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ stress --verbose -i 4<br>stress: info: [18262] dispatching hogs: 0 cpu, 4 io, 0 vm, 0 hdd<br>stress: dbug: [18262] using backoff sleep of 12000us<br>stress: dbug: [18262] --&gt; hogio worker 4 [18263] forked<br>stress: dbug: [18262] using backoff sleep of 9000us<br>stress: dbug: [18262] --&gt; hogio worker 3 [18264] forked<br>stress: dbug: [18262] using backoff sleep of 6000us<br>stress: dbug: [18262] --&gt; hogio worker 2 [18265] forked<br>stress: dbug: [18262] using backoff sleep of 3000us<br>stress: dbug: [18262] --&gt; hogio worker 1 [18266] forked<br><br>$ top<br>...<br>%Cpu(s):  0.3 us, 81.5 sy,  0.0 ni, 18.2 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st<br>...<br>  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                     <br>18265 root      20   0    7308    100      0 R  76.4  0.0   2:21.05 stress<br>18266 root      20   0    7308    100      0 R  76.4  0.0   2:20.90 stress<br>18263 root      20   0    7308    100      0 R  76.1  0.0   2:20.62 stress<br>18264 root      20   0    7308    100      0 R  76.1  0.0   2:20.97 stress<br></code></pre></td></tr></table></figure>
+<p>可以发现 I/O 操作消耗的资源主要为内核态 CPU 资源。</p>
+<p>接下来做内存的压力测试，我们产生 2 个 2G 的内存分配进程，并且不进行释放：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 先看下这台服务器的内存</span><br>$ free -m<br>              total        used        free      shared  buff/cache   available<br>Mem:           7821         217        6997           8         606        7319<br>Swap:          8191           0        8191<br><br>$ stress --vm 2 --vm-bytes 2G --vm-keep<br>stress: info: [18312] dispatching hogs: 0 cpu, 0 io, 2 vm, 0 hdd<br><br><span class="hljs-comment"># 在另一个终端执行</span><br>$ free -m<br>              total        used        free      shared  buff/cache   available<br>Mem:           7821        4320        2894           8         606        3216<br>Swap:          8191           0        8191<br></code></pre></td></tr></table></figure>
+<p>发现一共占用了 4GB 的内存资源。</p>
+<p>最后做磁盘读写的测试，我们产生 1 个磁盘写的进程，这个进程会不断的写，写完后在执行 Unlink 操作删除掉：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ stress -d 1<br>stress: info: [18342] dispatching hogs: 0 cpu, 0 io, 0 vm, 1 hdd<br><br><span class="hljs-comment"># iostat 命令需要下载 sysstat 包，下载命令为 yum install -y sysstat</span><br>$ iostat -m  1<br>avg-cpu:  %user   %nice %system %iowait  %steal   %idle<br>           0.50    0.00   27.89    4.02    0.00   67.59<br><br>Device:            tps    MB_read/s    MB_wrtn/s    MB_read    MB_wrtn<br>sda             688.00         0.00       344.00          0        344<br>scd0              0.00         0.00         0.00          0          0<br>dm-0            688.00         0.00       344.00          0        344<br>dm-1              0.00         0.00         0.00          0          0<br></code></pre></td></tr></table></figure>
+<p>可以发现，磁盘写操作占用磁盘写资源。</p>
+<h3 id="如何在容器内使用-Stress-工具"><a href="#如何在容器内使用-Stress-工具" class="headerlink" title="如何在容器内使用 Stress 工具"></a>如何在容器内使用 Stress 工具</h3><p>我们可以在容器内挂载 <code>stress</code> 命令来达到在容器内进行压测的目的了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 我们先用一个 --cpus 参数来限制容器使用的 CPU 个数来测试</span><br>$ docker run --rm -it --cpus 0.5 --mount <span class="hljs-built_in">type</span>=<span class="hljs-built_in">bind</span>,src=/usr/bin/stress,dst=/usr/bin/stress centos:7 stress -c 4<br>stress: info: [1] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd<br><br><span class="hljs-comment"># 在另一个终端使用 top 命令</span><br>$ top<br>...<br>%Cpu(s): 12.6 us,  0.0 sy,  0.0 ni, 87.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st<br>...<br>  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND<br>19205 root      20   0    7308    100      0 R  12.6  0.0   0:09.87 stress<br>19206 root      20   0    7308    100      0 R  12.6  0.0   0:09.96 stress<br>19203 root      20   0    7308    100      0 R  12.3  0.0   0:09.89 stress<br>19204 root      20   0    7308    100      0 R  12.3  0.0   0:09.86 stress<br></code></pre></td></tr></table></figure>
+<p>但是这样做有些麻烦，我们可以制作一个封装了 <code>stress</code> 命令的容器。这样，也省的在宿主机上下载 Stress 工具包了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 使用 tree 命令查看文件树需要下载 tree 包，下载命令为 yum install -y tree</span><br>$ tree<br>.<br>└── Dockerfile<br><br>0 directories, 1 file<br><br>$ cat Dockerfile <br>FROM centos:7<br>MAINTAINER Peng.Gao &lt;jugg.gao@qq.com&gt;<br><br>RUN yum install -y epel-release &amp;&amp; yum install -y stress<br><br>ENTRYPOINT [<span class="hljs-string">"/usr/bin/stress"</span>]<br>CMD [<span class="hljs-string">"--help"</span>]<br><br>$ docker image build -t jugggao/stress:1.0 .<br>Sending build context to Docker daemon  2.048kB<br>Step 1/5 : FROM centos:7<br> ---&gt; 1e1148e4cc2c<br>Step 2/5 : MAINTAINER Peng.Gao &lt;jugg.gao@qq.com&gt;<br> ---&gt; Using cache<br> ---&gt; 4129b0988155<br>...<br>Successfully tagged jugggao/stress:1.0<br><br>$ docker image ls<br>REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE<br>jugggao/stress      1.0                 47f7f30d7bc6        7 minutes ago       317MB<br></code></pre></td></tr></table></figure>
+<p>使用 Dockerfile 来制作 Docker 镜像以后我会讲到，做完镜像以后在容器内使用 <code>stress</code> 命令就方便多了：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpus 1 jugggao/stress:1.0 -c 2<br>stress: info: [1] dispatching hogs: 2 cpu, 0 io, 0 vm, 0 hdd<br><br>$ top<br>...<br>%Cpu(s): 25.0 us,  0.1 sy,  0.0 ni, 74.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st<br>...<br>  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND<br>21610 root      20   0    7308     96      0 R  50.2  0.0   1:33.93 stress<br>21611 root      20   0    7308     96      0 R  49.5  0.0   1:33.45 stress<br></code></pre></td></tr></table></figure>
+<p>因为这个镜像指定的入口（ENTRYPOINT）为 <code>/usr/bin/stress</code> 命令，所以我们连命令都不需要指定了，直接指定对应的参数即可。这个镜像我已经上传到我的 Docker Hub 中，想直接使用的话可以使用以下命令下载：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker pull jugggao/stress:1.0<br></code></pre></td></tr></table></figure>
+<h2 id="CPU-限制"><a href="#CPU-限制" class="headerlink" title="CPU 限制"></a>CPU 限制</h2><p>限制 CPU 资源的参数有很多：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">--cpu-period  <span class="hljs-comment"># 与 --cpu-quota 结合使用，用于指定 CPU 从新分配资源的时间周期，时间周期结束后，会对CPU 进行重新分配</span><br>--cpu-quota  <span class="hljs-comment"># 与 --cpu-period 结合使用，于设定该容器在资源分配周期内占用 CPU 的时间</span><br>--cpu-rt-period  <span class="hljs-comment"># --cpu-period 的微秒版，指定 CPU 重新分配资源的的时间周期 </span><br>--cpu-rt-runtime  <span class="hljs-comment"># 在一个 CPU 资源分配周期内，优先保证容器的 CPU 使用的最大微秒数</span><br>-c, --cpu-shares  <span class="hljs-comment"># 设置容器 CPU 权重，可以用于调整容器在单位分配周期内的资源优先使用比</span><br>--cpus  <span class="hljs-comment"># 设置容器使用 CPU 的数量，用于快速设置容器对于 CPU 的占用</span><br>--cpuset-cpus  <span class="hljs-comment"># 将容器绑定在指定的 CPU 上运行，可以设置范围（0-3），也可以绑定多个（ 0,2）</span><br>--cpuset-mems  <span class="hljs-comment"># 将容器绑定在指定的内存节点，每个内存节点和 NUMA 节点一一对应</span><br></code></pre></td></tr></table></figure>
+<p>这里只介绍 <code>--cpus</code> 与 <code>--cpuset-cpus</code> 这两个参数。</p>
+<h3 id="限制容器最多能使用的-CPU-核数"><a href="#限制容器最多能使用的-CPU-核数" class="headerlink" title="限制容器最多能使用的 CPU 核数"></a>限制容器最多能使用的 CPU 核数</h3><p>Docker 提供了 <code>--cpus</code> 参数可以限定容器能使用的 CPU 核数。这个功能可以让我们精确的设置 CPU 容器使用量。相比于 <code>--cpu-period</code> 参数与 <code>--cpu-quota</code> 参数结合使用，这个参数也更容易理解。</p>
+<p><code>--cpus</code> 后面跟一个浮点数，代表容器最多可以使用的 CPU 核数，可以精确到小数点二位，也就是说容器最小可以设置最多使用 0.01 核 CPU。比如我们现在有 4 个核心，限制容器最多能使用 2 个核心：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpus 2 jugggao/stress:1.0 -c 4<br>stress: info: [1] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd<br><br><span class="hljs-comment"># 由于容器名是随机的，查询一下容器的 ID</span><br>$ docker container ls<br>CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES<br>385ddca16804        jugggao/stress:1.0   <span class="hljs-string">"/usr/bin/stress -c 4"</span>   6 seconds ago       Up 5 seconds                            gracious_keldysh<br><br><span class="hljs-comment"># 在另一个终端使用 docker container stats 查询容器占用的资源</span><br>$ docker container stats 385ddca16804<br>CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS<br>385ddca16804        gracious_keldysh    199.57%             192KiB / 7.638GiB   0.00%               656B / 0B           24.6kB / 0B         5<br><br><span class="hljs-comment"># 我们使用 htop 更人性化显示主机资源使用情况</span><br>$ htop<br></code></pre></td></tr></table></figure>
+<p><img src="./images/CPU使用核心数限制.png" alt="CPU 使用核心数限制"></p>
+<p>我们在容器内启动了 4 个 CPU 进程，如果不做限制的话，这个容器会把宿主机上的 CPU 资源全部吃完。但是我们添加了 <code>--cpus 2</code> 这个限制，无论容器启动多少个进程，最多只能占用宿主机的 2 个 cpu 核心数，即宿主机 CPU 资源的 50%。</p>
+<h3 id="限制容器运行在固定的-CPU-核心上"><a href="#限制容器运行在固定的-CPU-核心上" class="headerlink" title="限制容器运行在固定的 CPU 核心上"></a>限制容器运行在固定的 CPU 核心上</h3><p>现在的服务器或个人电脑都会有多个 CPU，Docker 也允许调度资源的时候限制容器运行在哪个 CPU 核心上。</p>
+<p>比如我的主机有 4 个核心（0,1,2,3），现在有一些不太重要的容器（比如说需要一些大量的 I/O 操作，不需要执行的很快，优先级不是很高），我希望这些不太重要的容器共用最后 2 个核心，达到不影响其他重要的容器的目的。那么我们可以通过 <code>--cpuset-cpus</code> 参数让这些容器只运行在固定的 CPU 核心上：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpuset-cpus 2,3 jugggao/stress:1.0 -c 4<br>stress: info: [1] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd<br><br>$ htop<br></code></pre></td></tr></table></figure>
+<p><img src="./images/绑定固定CPU核心.png" alt="绑定固定 CPU 核心"></p>
+<p>我们在容器内启动的 CPU 进程只在 2 和 3 这两个 CPU 核心上运行了。</p>
+<p>我们还可以指定一段 CPU 核心的范围：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpuset-cpus 2-3 jugggao/stress:1.0 -c 4<br></code></pre></td></tr></table></figure>
+<h2 id="内存限制"><a href="#内存限制" class="headerlink" title="内存限制"></a>内存限制</h2><p>默认情况下，Docker 不会对容器的内存进行限制，容器可以使用主机提供的所有内存。这是一件比较危险的事情，我在工作中遇见了不少代码内存泄漏导致系统主机内存耗尽，导致服务不可用。前段时间公司的一台阿里云服务器中了恶意程序不断的运行 Crontab 定时任务进行内存恶意消耗导致 OOM ，系统崩溃。 </p>
+<blockquote>
+<p>注： Docker 会设置 Docker Daemon 的 OOM（Out Of Memory）值，使其在内存不足的时候被杀死的优先级降低，因为如果 Docker Daemon 由于 OOM 的问题被 Linux 内核干掉了，那么这台服务器所有容器都不能再使用了，所以在内存不足的时候 Docker Daemon 应该排在容器进程后面被杀死才比较合理。</p>
+</blockquote>
+<p>对于这种情况，我们可以为每个容器设置内存的使用上限，一旦超过这个上限，容器就会被杀死，而不是耗尽主机的内存资源。</p>
+<p>注意，限制内存上限虽然能保护主机，但也可能会伤害容器内的服务。如果为服务设置的内存上限太小，会导致服务还在正常工作的时候就会因为 OOM 被 Kill 掉；如果设置的过大，会因为调度器算法浪费内存。</p>
+<p>因此，合理的做法包括：</p>
+<ul>
+<li><p>为应用做内存压力测试，理解业务正常时需求的使用内存资源量，然后再为容器做内存限制;</p>
+</li>
+<li><p>尽量保证主机的资源充足，一旦通过监控发现资源不足，就进行扩容或者对容器进行迁移（这点 Kubernetes 可以优雅的解决）;</p>
+</li>
+<li><p>进来不要使用 Swap 内存交换空间，Swap 交换空间的使用会导致内存计算复杂，对调度器非常不友好（Kubernetes 默认是必须禁用 Swap 交换空间的）。</p>
+</li>
+</ul>
+<p>Docker 限制容器内存使用量有以下参数：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">-m, --memory  <span class="hljs-comment"># 限制容器的内存使用量</span><br>--memory-reservation  <span class="hljs-comment"># 软限制容器的内存使用量，达到软限制的容器不会进行 OOM，但是如果 Docker 发现主机内存不足，会执行 OOM 操作优先 Kill 掉容器里的进程。这个值必须小于 --memory 设置的值</span><br>--memory-swap  <span class="hljs-comment"># 限制容器的总内存的使用量，包括物理内存和交换分区</span><br>--memory-swappiness  <span class="hljs-comment"># 默认情况下，主机可以把容器使用的匿名页（Anonymous Page）Swap 出来，你可以设置一个 0-100 之间的值，代表允许 Swap 出来的比例。默认情况下这个值会从宿主机继承</span><br>--kernel-memory  <span class="hljs-comment"># 限制容器的内核内存使用量</span><br>--oom-kill-disable  <span class="hljs-comment"># 默认情况下，如果内存不足，内核或终止容器内的进程。如果设置了此参数，内存不足时也不会终止容器内的进程，此时系统会 Kill 系统进程用于释放进程。这个参数比较危险，慎用。</span><br></code></pre></td></tr></table></figure>
+<p>这里只介绍 <code>-m</code> 参数与 <code>--memory-swap</code> 参数。</p>
+<h3 id="限制容器内存使用量"><a href="#限制容器内存使用量" class="headerlink" title="限制容器内存使用量"></a>限制容器内存使用量</h3><p>Docker 提供了 <code>-m</code> 或 <code>--memory</code> 参数来限制容器内存最大的使用量。我们来启动一个 Stress 容器并启动占用 4G 的内存分配进程，并把这个容器的内存上限限制为 2G，观察一下结果：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it  -m 2g  jugggao/stress:1.0 --vm 2 --vm-bytes 2G --vm-keep<br>stress: info: [1] dispatching hogs: 0 cpu, 0 io, 2 vm, 0 hdd<br>stress: FAIL: [1] (415) &lt;-- worker 8 got signal 9<br>stress: WARN: [1] (417) now reaping child worker processes<br>stress: FAIL: [1] (451) failed run completed <span class="hljs-keyword">in</span> 4s<br></code></pre></td></tr></table></figure>
+<p>容器内的进程由于超过了设置的内存上限导致 OOM，进程被 Kill 掉（信号 9）。</p>
+<h3 id="限制容器内交换空间使用量"><a href="#限制容器内交换空间使用量" class="headerlink" title="限制容器内交换空间使用量"></a>限制容器内交换空间使用量</h3><p>Docker 提供了 <code>--memory-swap</code> 参数来配置容器内的物理内存和交换空间总和的使用上限。关于这个参数的用法如下：</p>
+<ul>
+<li><p>如果设置了 <code>--memory-swap</code>  并且为正整数，那么也必须设置 <code>-m</code> 或 <code>--memory</code> 的值;</p>
+</li>
+<li><p><code>--memory-swap</code> 的值必须大于 <code>--memory</code> 的值，并且容器可用交换分区为：「交换分区」 = 「–memory-swap 设置的值」 - 「–memory-swap 设置的值」。比如设置了 <code>--memory 2g --memory-swap 6g</code>，容器内的可用交换分区为 4G;</p>
+</li>
+<li><p><code>--memory-swap</code> 的值为 0；或 <code>--memory-swap</code> 的值与 <code>--memory</code> 的值相同；或未指定 <code>--memory-swap</code> 参数，表示禁用容器内的交换分区使用;</p>
+</li>
+<li><p><code>--memory-swap</code> 的值为 -1 表示不限制容器内交换分区的使用，主机有多少 Swap 交换空间，容器就能用多少。</p>
+</li>
+</ul>
+<p>我们给容器分配 4G 的交换分区的使用来在看下是否还会导致容器内的进程因为 OOM 被 Kill 掉：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it  -m 2g  --memory-swap 6g jugggao/stress:1.0 --vm 2 --vm-bytes 2G --vm-keep<br>stress: info: [1] dispatching hogs: 0 cpu, 0 io, 2 vm, 0 hdd<br><br>$ docker container ls <br>CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES<br>62f39d1bed21        jugggao/stress:1.0   <span class="hljs-string">"/usr/bin/stress --v…"</span>   48 seconds ago      Up 47 seconds                           unruffled_jepsen<br><br>$ docker container stats 62f39d1bed21<br>CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS<br>62f39d1bed21        unruffled_jepsen    50.68%              2GiB / 2GiB         99.99%              656B / 0B           13.7GB / 10.4GB     3<br><br>$ free -m<br>              total        used        free      shared  buff/cache   available<br>Mem:           7821        2296        5178           8         346        5245<br>Swap:          8191        2051        6140<br></code></pre></td></tr></table></figure>
+<p>可以看到，容器内使用的最大内存已经达到了 2G，并且使用了 2G 的交换分区内存。</p>
+<p>不建议为容器配置交换分区，交换分区性能很低。可以在宿主机上配置 Swap 提供缓冲以防止系统内存资源耗尽而导致的系统崩溃。</p>
+<h2 id="磁盘限制"><a href="#磁盘限制" class="headerlink" title="磁盘限制"></a>磁盘限制</h2><p>对于磁盘来说，考量的参数是磁盘的容量与读写速度。因此对容器的磁盘限制也应该从这两个指标出发。</p>
+<p>Docker 目前支持对磁盘读写速度进行限制，但是并不支持对磁盘容量进行限制，一旦磁盘挂载到容器里，容器就能够使用磁盘所有的容量。</p>
+<h3 id="限制磁盘读写速率"><a href="#限制磁盘读写速率" class="headerlink" title="限制磁盘读写速率"></a>限制磁盘读写速率</h3><p>Docker 提供了两个参数来限制容器内磁盘的读写速率：</p>
+<ul>
+<li><p><code>--device-read-bps</code>：限制磁盘读取速率;</p>
+</li>
+<li><p><code>--device-write-bps</code>：限制磁盘写入速率。</p>
+</li>
+</ul>
+<p>上面两个参数的值都是磁盘对应的速率，格式为 <code>&lt;deivce-path&gt;:&lt;limit&gt;[unit]</code>，其中 <code>&lt;device-path&gt;</code> 表示磁盘所在位置，<code>&lt;limit&gt;</code> 表示限制的速率，后面的单位 <code>[unit]</code> 可以为 kb、mb、和 gb。</p>
+<p>比如我们把一个容器的磁盘设备读速率限制为 5 MB/s：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm  -it  --device-read-bps /dev/sda:5mb centos:7 \<br>    dd iflag=direct,nonblock <span class="hljs-keyword">if</span>=/dev/zero of=/dev/null bs=5M count=10<br>10+0 records <span class="hljs-keyword">in</span><br>10+0 records out<br>52428800 bytes (52 MB) copied, 50.0026 s, 1.0 MB/s<br></code></pre></td></tr></table></figure>
+<p>可以看到，从盘读取 50M 的数据，一共花费了 50s 左右，每秒读取 1MB。</p>
+<p>把磁盘的写速率限制为 1 MB/s：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --device-write-bps /dev/sda:1mb centos:7 \<br>    dd oflag=direct,nonblock <span class="hljs-keyword">if</span>=/dev/zero of=/tmp/<span class="hljs-built_in">test</span> bs=5M count=10<br>10+0 records <span class="hljs-keyword">in</span><br>10+0 records out<br>52428800 bytes (52 MB) copied, 50.0059 s, 1.0 MB/s<br></code></pre></td></tr></table></figure>
+<p>可以看到，写入 50M 的数据到磁盘空间，一共花费了 50s 左右，每秒读取 1MB。</p>
+<h3 id="限制磁盘读写频率"><a href="#限制磁盘读写频率" class="headerlink" title="限制磁盘读写频率"></a>限制磁盘读写频率</h3><p>Docker 还提供了两个参数来限制磁盘的读写频率：</p>
+<ul>
+<li><p><code>--device-read-iops</code>：磁盘每秒最多可以执行多少 IO 读操作；</p>
+</li>
+<li><p><code>--device-write-iops</code>：磁盘每秒最多可以执行多少 IO 写操作。</p>
+</li>
+</ul>
+<p>上面两个参数的值都是磁盘以及对应的 IO 上限，格式为 <code>&lt;device-path&gt;:&lt;limit&gt;</code>，<code>&lt;limit&gt;</code> 为正整数，表示磁盘 IO 上限数。</p>
+<p>我们来限制容器磁盘设备每秒最多读 100 次：</p>
+<figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -it --device /dev/sda:/dev/sda --device-read-iops /dev/sda:100 centos:7 \<br>    dd iflag=direct,nonblock <span class="hljs-keyword">if</span>=/dev/sda of=/dev/null bs=1k count=1000<br>1000+0 records <span class="hljs-keyword">in</span><br>1000+0 records out<br>1024000 bytes (1.0 MB) copied, 9.91246 s, 103 kB/s<br></code></pre></td></tr></table></figure>
+<p>因为我们制定了 bs 这个参数为 1k，表示一次读写 1K 的数据，所以我们指定一共要读 1000 次，一共用了 10s，符合预期。</p>
+<p><code>--device-write-iops</code> 参数与 <code>--device-read-iops</code> 参数类似，就不再说明。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Docker 中可以限制的资源有：</p>
+<ol>
+<li><p>CPU 限制，主要使用 <code>--cpus</code> 参数来限制容器最多使用的 CPU 核心数。</p>
+</li>
+<li><p>内存限制，主要使用 <code>-m</code> 参数来限制容器最多能使用的内存量。使用内存限制的时候一定要考虑业务实际内存的使用量再根据实际情况进行限制。</p>
+</li>
+<li><p>磁盘限制，主要使用 <code>--device-read-bps</code> 参数与 <code>--device-write-bps</code> 参数来限制容器内磁盘读写速率。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a href="https://docs.docker.com/config/containers/resource_constraints/#--memory-swappiness-details" target="_blank" rel="noopener">Limit a container’s resources</a></p>
+</li>
+<li><p><a href="https://docs.docker.com/engine/reference/run/" target="_blank" rel="noopener">Docker run reference</a></p>
+</li>
+</ul>
+
+    </main>
+    <footer class="post-footer">
+      
+    </footer>
+  </article>
+  
+  
+  <nav class="page-nav">
+    <div class="page-nav-next page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.6 Docker 内核能力配置/" rel="next" title="Docker 数据卷的使用与挂载主机目录"><i class="fas fa-angle-left"></i><span class="nav-title">Docker 数据卷的使用与挂载主机目录</span></a>
+      
+    </div>
+    <div class="page-nav-prev page-nav-item">
+      
+      <a href="/2019/03/22/Docker/1.4 Docker 网络配置/" rel="prev" title="Docker 网络配置"><span class="nav-title">Docker 网络配置</span><i class="fas fa-angle-right"></i></a>
+      
+    </div>
+  </nav>
+  
+  
+</div>
+
+          </div>
+          
+          
+          
+<aside class="sidebar" id="sidebar" style="background: url(/images/background.png);">
+  
+  <div class="search">
+    <div class="form-group">
+      <i class="fas fa-search"></i><input type="search" id="search-input" name="q" results="0" placeholder="搜索" class="form-control">
+    </div>
+  </div>
+  <div class="search-result-box" id="search-result"></div>
+  
+  
+<div class="info sidebar-item" id="info">
+  
+  <img class="author-avatar" src="/images/avatar.png" alt="Chris">
+  
+  <h1 class="author-name">Chris</h1>
+  <h2 class="author-description"></h2>
+  <div class="site-count">
+    
+    
+    
+    
+    <div class="archives-count count-block">
+      <div class="site-count-title">归档</div>
+      <div><a href="/archives/">12</a></div>
+    </div>
+    
+    
+    
+    <div class="categories-count count-block">
+      <div class="site-count-title">分类</div>
+      <div><a href="/categories/">8</a></div>
+    </div>
+    
+    
+    
+    <div class="tags-count count-block">
+      <div class="site-count-title">标签</div>
+      <div><a href="/tags/">0</a></div>
+    </div>
+    
+    
+    
+    
+  </div>
+  
+  <div class="rss">
+    <a class="rss-link button sidebar-item" href="/atom.xml"><i class="fas fa-rss"></i>RSS</a>
+  </div>
+  
+</div>
+
+
+  <div class="sidebar-sticky">
+    
+    
+    
+    
+    
+    <hr>
+    <div class="post-toc sidebar-item" id="toc-div">
+      <div><i class="fas fa-list-ol"></i>文章目录</div>
+      <div class="post-toc-content"><ol class="list-group toc"><li class="toc-item toc-level-1"><a class="list-group-item toc-link" href="#1-5-Docker-资源限制"><span class="toc-text">1.5 Docker 资源限制</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#Stress-工具介绍"><span class="toc-text">Stress 工具介绍</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#如何在容器内使用-Stress-工具"><span class="toc-text">如何在容器内使用 Stress 工具</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#CPU-限制"><span class="toc-text">CPU 限制</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制容器最多能使用的-CPU-核数"><span class="toc-text">限制容器最多能使用的 CPU 核数</span></a></li><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制容器运行在固定的-CPU-核心上"><span class="toc-text">限制容器运行在固定的 CPU 核心上</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#内存限制"><span class="toc-text">内存限制</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制容器内存使用量"><span class="toc-text">限制容器内存使用量</span></a></li><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制容器内交换空间使用量"><span class="toc-text">限制容器内交换空间使用量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#磁盘限制"><span class="toc-text">磁盘限制</span></a><ol class="list-group toc-child"><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制磁盘读写速率"><span class="toc-text">限制磁盘读写速率</span></a></li><li class="toc-item toc-level-3"><a class="list-group-item toc-link" href="#限制磁盘读写频率"><span class="toc-text">限制磁盘读写频率</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="list-group-item toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol></li></ol></div>
+    </div>
+    
+    
+    
+    <hr>
+    <div class="social-link sidebar-item">
+      <div><i class="far fa-address-card"></i>社交链接<p></p></div>
+      <ul>
+        
+        <li><i class="fas fa-envelope"></i><a href="mailto:youremail@youremailhost" target="_blank">E-Mail</a></li>
+        
+        <li><i class="fab fa-github"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fab fa-weibo"></i><a href="https://weibo.com/" target="_blank">Weibo</a></li>
+        
+      </ul>
+    </div>
+    
+    
+    <hr>
+    <div class="blogroll sidebar-item">
+      <div><i class="fas fa-link"></i>友情链接</div>
+      <ul>
+        
+        <li><i class="fas fa-link"></i><a href="https://github.com/" target="_blank">GitHub</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://developer.mozilla.org/" target="_blank">MDN</a></li>
+        
+        <li><i class="fas fa-link"></i><a href="https://mozilla.github.io/nunjucks/" target="_blank">Nunjucks</a></li>
+        
+      </ul>
+    </div>
+    
+  </div>
+</aside>
+
+
+          
+        </div>
+      </div>
+    </main>
+    
+<footer id="footer" class="footer" style="background: #33363b;">
+  <div class="container">
+    <div class="back-to-top">
+      <button id="back-to-top"><i class="fas fa-angle-double-up" aria-label="回到顶部"></i></button>
+    </div>
+    <div class="footer-container">
+      <div class="footer-left">
+        <div class="copyright">
+          <span class="author">Chris</span><span class="year"><i class="far fa-copyright"></i>2019</span>
+        </div>
+        
+        <div class="busuanzi">
+          <span id="busuanzi_container_site_pv"><i class="fas fa-eye" aria-label="站点点击量" aria-hidden="false"></i><span id="busuanzi_value_site_pv"></span></span><span id="busuanzi_container_site_uv"><i class="fas fa-user" aria-label="站点用户数" aria-hidden="false"></i><span id="busuanzi_value_site_uv"></span></span><span id="busuanzi_container_page_pv"><i class="far fa-file-alt"></i><span id="busuanzi_value_page_pv" aria-label="页面点击量" aria-hidden="false"></span></span>
+        </div>
+        
+      </div>
+      <div class="footer-right">
+        <div class="custom-info">
+          
+          托管于<i class="fab fa-github-alt"></i><a href="https://pages.github.com/" target="_blank">GitHub Pages</a>
+          
+        </div>
+        <div class="powered-by">
+          由 <a href="https://hexo.io/" target="_blank">Hexo</a> 强力驱动 | 主题 <a href="https://github.com/AlynxZhou/hexo-theme-aria/" target="_blank">ARIA</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+  </body>
+</html>

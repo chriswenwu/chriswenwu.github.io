@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="chriswenwu.github.io/"/>
-  <updated>2019-03-22T07:54:00.741Z</updated>
+  <updated>2019-03-22T08:43:00.513Z</updated>
   <id>chriswenwu.github.io/</id>
   
   <author>
@@ -15,6 +15,50 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.2%20Docker%20%E5%AE%B9%E5%99%A8%E5%92%8C%E9%95%9C%E5%83%8F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.2 Docker 容器和镜像的基本操作/</id>
+    <published>2019-03-22T08:43:00.512Z</published>
+    <updated>2019-03-22T08:43:00.513Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-2-Docker-容器和镜像的基本操作&quot;&gt;&lt;a href=&quot;#1-2-Docker-容器和镜像的基本操作&quot; class=&quot;headerlink&quot; title=&quot;1.2 Docker 容器和镜像的基本操作&quot;&gt;&lt;/a&gt;1.2 Docker
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.1%20Docker%20%E7%AE%80%E4%BB%8B%E4%B8%8E%E5%AE%89%E8%A3%85/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.1 Docker 简介与安装/</id>
+    <published>2019-03-22T08:43:00.512Z</published>
+    <updated>2019-03-22T08:43:00.512Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-1-Docker-简介与安装&quot;&gt;&lt;a href=&quot;#1-1-Docker-简介与安装&quot; class=&quot;headerlink&quot; title=&quot;1.1 Docker 简介与安装&quot;&gt;&lt;/a&gt;1.1 Docker 简介与安装&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;a
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>Prometheus 查询语言</title>
@@ -46,6 +90,174 @@
   </entry>
   
   <entry>
+    <title>Docker 网络配置</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.4%20Docker%20%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.4 Docker 网络配置/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:47:04.826Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-4-Docker-网络配置&quot;&gt;&lt;a href=&quot;#1-4-Docker-网络配置&quot; class=&quot;headerlink&quot; title=&quot;1.4 Docker 网络配置&quot;&gt;&lt;/a&gt;1.4 Docker 网络配置&lt;/h1&gt;&lt;p&gt;Docker 有 4
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 资源限制</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.5%20Docker%20%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.5 Docker 资源限制/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:46:59.321Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-5-Docker-资源限制&quot;&gt;&lt;a href=&quot;#1-5-Docker-资源限制&quot; class=&quot;headerlink&quot; title=&quot;1.5 Docker 资源限制&quot;&gt;&lt;/a&gt;1.5 Docker 资源限制&lt;/h1&gt;&lt;p&gt;使用 Docker
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 数据卷的使用与挂载主机目录</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.6%20Docker%20%E5%86%85%E6%A0%B8%E8%83%BD%E5%8A%9B%E9%85%8D%E7%BD%AE/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.6 Docker 内核能力配置/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:46:17.331Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-6-Docker-内核能力配置&quot;&gt;&lt;a href=&quot;#1-6-Docker-内核能力配置&quot; class=&quot;headerlink&quot; title=&quot;1.6 Docker 内核能力配置&quot;&gt;&lt;/a&gt;1.6 Docker 内核能力配置&lt;/h1&gt;&lt;p&gt;Linux
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>健康检查</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.7%20Docker%20%E5%81%A5%E5%BA%B7%E6%A3%80%E6%9F%A5/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.7 Docker 健康检查/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:46:53.956Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;Docker-健康检查&quot;&gt;&lt;a href=&quot;#Docker-健康检查&quot; class=&quot;headerlink&quot; title=&quot;Docker 健康检查&quot;&gt;&lt;/a&gt;Docker
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>理解镜像的构成</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.8%20Docker%20%E7%90%86%E8%A7%A3%E9%95%9C%E5%83%8F%E7%9A%84%E6%9E%84%E6%88%90/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.8 Docker 理解镜像的构成/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:46:47.475Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-8-理解镜像的构成&quot;&gt;&lt;a href=&quot;#1-8-理解镜像的构成&quot; class=&quot;headerlink&quot; title=&quot;1.8 理解镜像的构成&quot;&gt;&lt;/a&gt;1.8 理解镜像的构成&lt;/h1&gt;&lt;p&gt;对于开发者或者 Docker
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 使用 Dockerfile 自制镜像</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.9%20Docker%20%E4%BD%BF%E7%94%A8%20Dockerfile%20%E8%87%AA%E5%88%B6%E9%95%9C%E5%83%8F/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.9 Docker 使用 Dockerfile 自制镜像/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:46:41.730Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-8-Docker-使用-Dockerfile-自制镜像&quot;&gt;&lt;a href=&quot;#1-8-Docker-使用-Dockerfile-自制镜像&quot; class=&quot;headerlink&quot; title=&quot;1.8 Docker 使用 Dockerfile
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Prometheus 安装配置和使用</title>
     <link href="chriswenwu.github.io/2019/03/22/Prometheus/install/"/>
     <id>chriswenwu.github.io/2019/03/22/Prometheus/install/</id>
@@ -65,6 +277,34 @@
       <category term="Prometheus" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E7%9B%91%E6%8E%A7/Prometheus/"/>
     
       <category term="安装" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E7%9B%91%E6%8E%A7/Prometheus/%E5%AE%89%E8%A3%85/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Docker 数据卷的使用与挂载主机目录</title>
+    <link href="chriswenwu.github.io/2019/03/22/Docker/1.3%20Docker%20%E6%95%B0%E6%8D%AE%E5%8D%B7%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%8C%82%E8%BD%BD%E4%B8%BB%E6%9C%BA%E7%9B%AE%E5%BD%95/"/>
+    <id>chriswenwu.github.io/2019/03/22/Docker/1.3 Docker 数据卷的使用与挂载主机目录/</id>
+    <published>2019-03-22T01:10:11.000Z</published>
+    <updated>2019-03-22T08:47:08.458Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;1-3-Docker-数据卷的使用与挂载主机目录&quot;&gt;&lt;a href=&quot;#1-3-Docker-数据卷的使用与挂载主机目录&quot; class=&quot;headerlink&quot; title=&quot;1.3 Docker 数据卷的使用与挂载主机目录&quot;&gt;&lt;/a&gt;1.3 Docker
+        
+      
+    
+    </summary>
+    
+      <category term="运维" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="容器" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/"/>
+    
+      <category term="Dokcer" scheme="chriswenwu.github.io/categories/%E8%BF%90%E7%BB%B4/%E5%AE%B9%E5%99%A8/Dokcer/"/>
     
     
   </entry>
