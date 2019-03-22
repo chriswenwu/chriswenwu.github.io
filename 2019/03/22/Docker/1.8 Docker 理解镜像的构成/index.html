@@ -231,7 +231,7 @@
 <p>我们之前在「1.3 Docker 数据卷的使用与挂载主机目录」中提过，容器内最上层的可读写层是临时的。这个临时的可读写层随着容器的重启或删除也会清空，所以不要在容器的可读写层保存持久化数据。通过数据卷或者挂载主机目录来保存持久化数据。</p>
 </blockquote>
 <p>我们用一张图来描述容器使用 rootfs 文件系统：</p>
-<p><img src="./images/AUFS文件系统.png" alt="AUFS 文件系统"></p>
+<p><img src="/images/AUFS文件系统.png" alt="AUFS 文件系统"></p>
 <p>我们来进行验证：</p>
 <p>宿主机的进程（没有使用 Chroot 改变进程根目录）将会看到宿主机的文件系统，我们在宿主机运行一个 Java 程序：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ nohup java -jar demo-0.0.1.jar &gt; /dev/null 2&gt;&amp;1  &amp;<br>[2] 23108<br><br><span class="hljs-comment"># 查看 java 进程的根目录</span><br>$ ls /proc/23108/root/<br>bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var<br><br>$ du -sh --exclude=<span class="hljs-string">"/proc/23108/root/proc/*"</span> /proc/23108/root/<br>2.8G    /proc/23108/root/<br></code></pre></td></tr></table></figure>
@@ -239,15 +239,15 @@
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run -d --name hello hello:0.1<br>1aa9628ae3d6cfa15aae907f7eeda4b77468725719d5b40e9aa5303a11181063<br><br>$ ps -ef | grep -v grep | grep java<br>root     28417 28399 31 00:09 ?        00:00:06 java -jar /demo-0.0.1.jar<br><br>$ ls /proc/28417/root/<br>bin  boot  demo-0.0.1.jar  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var<br><br>$ du -sh --exclude=<span class="hljs-string">"/proc/28417/root/proc/*"</span> /proc/28417/root/<br>291M    /proc/28417/root/<br></code></pre></td></tr></table></figure>
 <p>可以发现容器内的整个文件系统要比宿主机的文件系统小的多。</p>
 <p>我们用一幅图来比较运行在宿主机的进程与运行在容器内的进程：</p>
-<p><img src="./images/DockerAUFS文件系统.png" alt="Docker AUFS 文件系统"></p>
+<p><img src="/images/DockerAUFS文件系统.png" alt="Docker AUFS 文件系统"></p>
 <p>现在我们再来看官方的图应该就能理解宿主机的进程和容器内的进程的区别了，也应该能理解镜像到底是什么？就是给容器内的进程提供一个运行环境的：</p>
-<p><img src="./images/宿主机进程和容器进程的区别.png" alt="宿主机进程和容器进程的区别"></p>
+<p><img src="/images/宿主机进程和容器进程的区别.png" alt="宿主机进程和容器进程的区别"></p>
 <p>这幅图右边的 Libraries 就是一个操作系统所需要的目录及文件，再把我们需要的程序放进去（比如说 Java 程序）。也就是我们刚才所说的 rootfs 文件系统，而这个 rootfs 操作系统就是由 Docker 镜像所提供的。</p>
 <h2 id="Docker-镜像的分层"><a href="#Docker-镜像的分层" class="headerlink" title="Docker 镜像的分层"></a>Docker 镜像的分层</h2><p>Docker 镜像是采用分层方式构建的，每个镜像由一系列的「镜像层」构成。</p>
 <p>Docker 镜像分层结构是 Docker 镜像轻量的主要原因。当需要修改容器镜像内的某个文件时，只对处于上方的读写层进行变动，不覆盖读写层下面已有的文件系统的内容，已有文件在只读层中的原始版本依然会存在，但会被隐藏。当你使用 <code>Docker commit</code> 或使用 <code>Dockerfile</code> 在原始镜像的基础上生成新的镜像时，保存的内容仅为最上层的读写层，相当于多了一个「镜像层」。</p>
 <p>分层的目的就是为了在不同的镜像之间共享镜像层达到节省磁盘空间的目的。</p>
 <p>我们用一张图来描述镜像的分层：</p>
-<p><img src="./images/Docker镜像分层.png" alt="Docker 镜像分层"></p>
+<p><img src="/images/Docker镜像分层.png" alt="Docker 镜像分层"></p>
 <p>我们来验证镜像的分层：</p>
 <p>查看系统中的镜像：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker image ls<br>REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE<br>wema/zuul           0.1                 7baa6ec0606d        2 days ago          338MB<br>wema/users          0.1                 0c6721ba85c8        2 days ago          337MB<br>wema/third-party    0.1                 4d112e570e6c        2 days ago          346MB<br>wema/teacher        0.1                 d96228e1ac53        2 days ago          336MB<br>wema/eureka         0.1                 4ff81306b255        2 days ago          324MB<br>wema/course         0.1                 ce2594635709        2 days ago          339MB<br>wema/company        0.1                 b01a31292858        2 days ago          336MB<br>tomcat              8                   168588387c68        13 days ago         463MB<br>mysql               5.7                 e47e309f72c8        2 weeks ago         372MB<br>java                8                   719e41f3e37b        3 months ago        280MB<br>redis               3                   87856cc39862        4 months ago        76MB<br></code></pre></td></tr></table></figure>
@@ -284,6 +284,12 @@
 
     </main>
     <footer class="post-footer">
+      
+      <div class="post-tags">
+        
+        <a class="post-tag button" href="/tags/Docker/" rel="tag"><i class="fas fa-tags"></i>Docker</a>
+        
+      </div>
       
     </footer>
   </article>
@@ -346,7 +352,7 @@
     
     <div class="tags-count count-block">
       <div class="site-count-title">标签</div>
-      <div><a href="/tags/">0</a></div>
+      <div><a href="/tags/">1</a></div>
     </div>
     
     

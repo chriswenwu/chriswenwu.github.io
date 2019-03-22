@@ -247,12 +247,12 @@
 <h3 id="限制容器最多能使用的-CPU-核数"><a href="#限制容器最多能使用的-CPU-核数" class="headerlink" title="限制容器最多能使用的 CPU 核数"></a>限制容器最多能使用的 CPU 核数</h3><p>Docker 提供了 <code>--cpus</code> 参数可以限定容器能使用的 CPU 核数。这个功能可以让我们精确的设置 CPU 容器使用量。相比于 <code>--cpu-period</code> 参数与 <code>--cpu-quota</code> 参数结合使用，这个参数也更容易理解。</p>
 <p><code>--cpus</code> 后面跟一个浮点数，代表容器最多可以使用的 CPU 核数，可以精确到小数点二位，也就是说容器最小可以设置最多使用 0.01 核 CPU。比如我们现在有 4 个核心，限制容器最多能使用 2 个核心：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpus 2 jugggao/stress:1.0 -c 4<br>stress: info: [1] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd<br><br><span class="hljs-comment"># 由于容器名是随机的，查询一下容器的 ID</span><br>$ docker container ls<br>CONTAINER ID        IMAGE                COMMAND                  CREATED             STATUS              PORTS               NAMES<br>385ddca16804        jugggao/stress:1.0   <span class="hljs-string">"/usr/bin/stress -c 4"</span>   6 seconds ago       Up 5 seconds                            gracious_keldysh<br><br><span class="hljs-comment"># 在另一个终端使用 docker container stats 查询容器占用的资源</span><br>$ docker container stats 385ddca16804<br>CONTAINER ID        NAME                CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS<br>385ddca16804        gracious_keldysh    199.57%             192KiB / 7.638GiB   0.00%               656B / 0B           24.6kB / 0B         5<br><br><span class="hljs-comment"># 我们使用 htop 更人性化显示主机资源使用情况</span><br>$ htop<br></code></pre></td></tr></table></figure>
-<p><img src="./images/CPU使用核心数限制.png" alt="CPU 使用核心数限制"></p>
+<p><img src="/images/CPU使用核心数限制.png" alt="CPU 使用核心数限制"></p>
 <p>我们在容器内启动了 4 个 CPU 进程，如果不做限制的话，这个容器会把宿主机上的 CPU 资源全部吃完。但是我们添加了 <code>--cpus 2</code> 这个限制，无论容器启动多少个进程，最多只能占用宿主机的 2 个 cpu 核心数，即宿主机 CPU 资源的 50%。</p>
 <h3 id="限制容器运行在固定的-CPU-核心上"><a href="#限制容器运行在固定的-CPU-核心上" class="headerlink" title="限制容器运行在固定的 CPU 核心上"></a>限制容器运行在固定的 CPU 核心上</h3><p>现在的服务器或个人电脑都会有多个 CPU，Docker 也允许调度资源的时候限制容器运行在哪个 CPU 核心上。</p>
 <p>比如我的主机有 4 个核心（0,1,2,3），现在有一些不太重要的容器（比如说需要一些大量的 I/O 操作，不需要执行的很快，优先级不是很高），我希望这些不太重要的容器共用最后 2 个核心，达到不影响其他重要的容器的目的。那么我们可以通过 <code>--cpuset-cpus</code> 参数让这些容器只运行在固定的 CPU 核心上：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpuset-cpus 2,3 jugggao/stress:1.0 -c 4<br>stress: info: [1] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd<br><br>$ htop<br></code></pre></td></tr></table></figure>
-<p><img src="./images/绑定固定CPU核心.png" alt="绑定固定 CPU 核心"></p>
+<p><img src="/images/绑定固定CPU核心.png" alt="绑定固定 CPU 核心"></p>
 <p>我们在容器内启动的 CPU 进程只在 2 和 3 这两个 CPU 核心上运行了。</p>
 <p>我们还可以指定一段 CPU 核心的范围：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --cpuset-cpus 2-3 jugggao/stress:1.0 -c 4<br></code></pre></td></tr></table></figure>
@@ -339,6 +339,12 @@
     </main>
     <footer class="post-footer">
       
+      <div class="post-tags">
+        
+        <a class="post-tag button" href="/tags/Docker/" rel="tag"><i class="fas fa-tags"></i>Docker</a>
+        
+      </div>
+      
     </footer>
   </article>
   
@@ -400,7 +406,7 @@
     
     <div class="tags-count count-block">
       <div class="site-count-title">标签</div>
-      <div><a href="/tags/">0</a></div>
+      <div><a href="/tags/">1</a></div>
     </div>
     
     

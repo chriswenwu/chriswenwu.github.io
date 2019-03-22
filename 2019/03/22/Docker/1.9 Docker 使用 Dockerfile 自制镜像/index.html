@@ -434,14 +434,14 @@
 <ul>
 <li><code>--pid</code> 用于配置容器的 Linux Pid Namespace，可选值有 <code>container:&lt;name|id&gt;</code>、<code>host</code>，前者为共享容器的进程空间，后者为共享宿主机的进程空间。</li>
 </ul>
-<p><img src="./images/Htop镜像使用一.png" alt="Htop 镜像使用一"></p>
+<p><img src="/images/Htop镜像使用一.png" alt="Htop 镜像使用一"></p>
 <p>我们使用这个工具镜像启动一个运行 <code>htop</code> 命令的容器，并监控了 Nginx 容器内的进程。</p>
 <p>我们在来使用这个工具镜像启动一个运行 <code>htop</code> 命令的容器，监控宿主机的进程：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --pid host htop:v1<br></code></pre></td></tr></table></figure>
-<p><img src="./images/Htop镜像使用二.png" alt="Htop 镜像使用二"></p>
+<p><img src="/images/Htop镜像使用二.png" alt="Htop 镜像使用二"></p>
 <p>我们还可以直接添加 <code>-t</code> 参数来显示进程树：</p>
 <figure class="hljs highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ docker container run --rm -it --pid container:nginx  htop:v1 -t<br></code></pre></td></tr></table></figure>
-<p><img src="./images/Htop镜像使用三.png" alt="Htop 镜像使用三"></p>
+<p><img src="/images/Htop镜像使用三.png" alt="Htop 镜像使用三"></p>
 <p>那么，为什么要使用 <code>ENTRYPOINT [&quot;htop&quot;]</code>，使用 <code>CMD [&quot;htop&quot;]</code> 不是也可以使用吗？</p>
 <p>因为如果使用 <code>CMD [&quot;htop&quot;]</code> 就无法直接加参数使用命令：</p>
 <p>我们来制作一个使用 <code>CMD</code> 指令的 Htop 镜像：</p>
@@ -619,6 +619,12 @@
     </main>
     <footer class="post-footer">
       
+      <div class="post-tags">
+        
+        <a class="post-tag button" href="/tags/Docker/" rel="tag"><i class="fas fa-tags"></i>Docker</a>
+        
+      </div>
+      
     </footer>
   </article>
   
@@ -680,7 +686,7 @@
     
     <div class="tags-count count-block">
       <div class="site-count-title">标签</div>
-      <div><a href="/tags/">0</a></div>
+      <div><a href="/tags/">1</a></div>
     </div>
     
     

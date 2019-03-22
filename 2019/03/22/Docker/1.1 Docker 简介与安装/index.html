@@ -233,7 +233,7 @@
 </ul>
 <p>所以 Docker 容器和虚拟机完全不同，在运行 Docker 时，并没有一个真正的「Docker 容器」运行在宿主机上面。 Docker 帮你启动的，还是原来的应用进程，只不过创建这些进程时，Docker 为它们加上了各种各样的隔离与限制，这样使用 Docker 运行的进程就仿佛运行在一个一个「容器」里面，与世隔绝。 其实只不过都是「障眼法」罢了。</p>
 <p>下面是官方给出的 Docker 与传统虚拟机的对比图：</p>
-<p><img src="./images/Docker与传统虚拟机对比.png" alt="Docker 与传统虚拟机对比.png"></p>
+<p><img src="/images/Docker与传统虚拟机对比.png" alt="Docker 与传统虚拟机对比.png"></p>
 <p>这幅图的左边为虚拟机的工作原理。其中 Hypervisor 的软件是虚拟机最主要的部分。它通过硬件<a href="https://www.redhat.com/zh/topics/virtualization/what-is-virtualization" target="_blank" rel="noopener">虚拟化</a>功能，模拟出了运行一个操作系统所需要的各种硬件，比如 CPU、内存、I/O 设备等等。然后，它在这些虚拟的硬件上安装了一个新的操作系统，即 Guest OS。</p>
 <p>而这幅图的右边，则用了一个 Docker Engine 的软件替换了 Hypervisor，属于<a href="https://en.wikipedia.org/wiki/Container_virtualization" target="_blank" rel="noopener">操作系统层面的虚拟化技术</a>,因为上层只是与系统其它部分隔离开的一系列进程，所以叫做<a href="https://www.redhat.com/zh/topics/containers/whats-a-linux-container" target="_blank" rel="noopener">容器</a>。</p>
 <h2 id="Docker-的优势"><a href="#Docker-的优势" class="headerlink" title="Docker 的优势"></a>Docker 的优势</h2><ul>
@@ -296,7 +296,7 @@
 </li>
 </ul>
 <p>这里使用的是 Windows Pro 1803 版本。</p>
-<p><img src="./images/Windows版本.png" alt="Windows 版本"></p>
+<p><img src="/images/Windows版本.png" alt="Windows 版本"></p>
 <p>安装 Docker：</p>
 <ol>
 <li><p>下载适用于 Windows 的 <a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows" target="_blank" rel="noopener">Docker Desktop</a>。</p>
@@ -304,10 +304,10 @@
 <li><p>双击 Docker for Windows Installer.exe 运行安装程序。</p>
 </li>
 <li><p>安装完成后启动 Docker Desktop。</p>
-<p><img src="./images/DockerDesktop.png" alt="Docker Desktop"></p>
+<p><img src="/images/DockerDesktop.png" alt="Docker Desktop"></p>
 </li>
 <li><p>运行 Powershell 检测是否安装完成。</p>
-<p><img src="./images/Powershell检测Docker.png" alt="Powershell 检测 Docker"></p>
+<p><img src="/images/Powershell检测Docker.png" alt="Powershell 检测 Docker"></p>
 </li>
 </ol>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
@@ -333,6 +333,12 @@
 
     </main>
     <footer class="post-footer">
+      
+      <div class="post-tags">
+        
+        <a class="post-tag button" href="/tags/Docker/" rel="tag"><i class="fas fa-tags"></i>Docker</a>
+        
+      </div>
       
     </footer>
   </article>
@@ -395,7 +401,7 @@
     
     <div class="tags-count count-block">
       <div class="site-count-title">标签</div>
-      <div><a href="/tags/">0</a></div>
+      <div><a href="/tags/">1</a></div>
     </div>
     
     
